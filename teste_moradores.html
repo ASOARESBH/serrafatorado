@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Moradores - Debug</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .test-button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .result pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .warning {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .info-box strong {
+            color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste de Moradores - Diagnóstico Completo</h1>
+        <p class="subtitle">Sistema de Debug para identificar problemas na API de Moradores</p>
+
+        <div class="info-box">
+            <strong>ℹ️ Informação:</strong> Este teste irá verificar todas as chamadas da API de moradores e identificar onde está o problema.
+        </div>
+
+        <!-- Teste 1: Listar Moradores -->
+        <div class="test-section">
+            <h2>1. Listar Todos os Moradores <span id="status1" class="status-badge status-pending">Pendente</span></h2>
+            <button class="test-button" onclick="testarListarMoradores()">🔍 Testar Listagem</button>
+            <div id="result1" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Teste 2: Buscar Moradores com Filtro -->
+        <div class="test-section">
+            <h2>2. Buscar Moradores (com filtro) <span id="status2" class="status-badge status-pending">Pendente</span></h2>
+            <button class="test-button" onclick="testarBuscarMoradores()">🔍 Testar Busca</button>
+            <div id="result2" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Teste 3: Carregar Unidades -->
+        <div class="test-section">
+            <h2>3. Carregar Unidades <span id="status3" class="status-badge status-pending">Pendente</span></h2>
+            <button class="test-button" onclick="testarCarregarUnidades()">🏠 Testar Unidades</button>
+            <div id="result3" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Teste 4: Teste Direto da API -->
+        <div class="test-section">
+            <h2>4. Teste Direto (sem fetch) <span id="status4" class="status-badge status-pending">Pendente</span></h2>
+            <button class="test-button" onclick="testarDireto()">⚡ Abrir API Diretamente</button>
+            <div id="result4" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Teste 5: Verificar Caminhos -->
+        <div class="test-section">
+            <h2>5. Verificar Caminhos das APIs <span id="status5" class="status-badge status-pending">Pendente</span></h2>
+            <button class="test-button" onclick="testarCaminhos()">🛣️ Testar Caminhos</button>
+            <div id="result5" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Botão para testar tudo -->
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="test-button" style="background: #28a745; font-size: 16px; padding: 15px 40px;" onclick="testarTudo()">
+                ✅ Testar Tudo de Uma Vez
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Função auxiliar para mostrar resultado
+        function mostrarResultado(id, html, sucesso) {
+            const resultDiv = document.getElementById('result' + id);
+            const statusSpan = document.getElementById('status' + id);
+            
+            resultDiv.innerHTML = html;
+            resultDiv.style.display = 'block';
+            
+            if (sucesso) {
+                statusSpan.className = 'status-badge status-success';
+                statusSpan.textContent = 'Sucesso ✅';
+            } else {
+                statusSpan.className = 'status-badge status-error';
+                statusSpan.textContent = 'Erro ❌';
+            }
+        }
+
+        // Teste 1: Listar Moradores
+        async function testarListarMoradores() {
+            const id = 1;
+            mostrarResultado(id, '<div class="loading"></div> Testando...', false);
+            
+            try {
+                const response = await fetch('api/api_moradores.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const statusCode = response.status;
+                const contentType = response.headers.get('content-type');
+                
+                let html = `<p><strong>Status HTTP:</strong> ${statusCode}</p>`;
+                html += `<p><strong>Content-Type:</strong> ${contentType}</p>`;
+                html += `<hr>`;
+
+                if (statusCode === 403) {
+                    html += `<p class="error">❌ ERRO 403 - Acesso Negado!</p>`;
+                    html += `<p>O .htaccess está bloqueando a API.</p>`;
+                    mostrarResultado(id, html, false);
+                    return;
+                }
+
+                const text = await response.text();
+                
+                if (contentType && contentType.includes('application/json')) {
+                    try {
+                        const json = JSON.parse(text);
+                        html += `<p class="success">✅ JSON válido recebido!</p>`;
+                        html += `<p><strong>Sucesso:</strong> ${json.sucesso}</p>`;
+                        html += `<p><strong>Mensagem:</strong> ${json.mensagem}</p>`;
+                        if (json.dados && Array.isArray(json.dados)) {
+                            html += `<p><strong>Total de moradores:</strong> ${json.dados.length}</p>`;
+                            html += `<hr><p><strong>JSON Completo:</strong></p>`;
+                            html += `<pre>${JSON.stringify(json, null, 2)}</pre>`;
+                        }
+                        mostrarResultado(id, html, true);
+                    } catch (e) {
+                        html += `<p class="error">❌ Erro ao fazer parse do JSON: ${e.message}</p>`;
+                        html += `<p><strong>Resposta recebida:</strong></p>`;
+                        html += `<pre>${text.substring(0, 500)}</pre>`;
+                        mostrarResultado(id, html, false);
+                    }
+                } else {
+                    html += `<p class="error">❌ Resposta não é JSON!</p>`;
+                    html += `<p>A API retornou HTML ou texto em vez de JSON.</p>`;
+                    html += `<p><strong>Resposta recebida:</strong></p>`;
+                    html += `<pre>${text.substring(0, 1000)}</pre>`;
+                    mostrarResultado(id, html, false);
+                }
+            } catch (error) {
+                const html = `<p class="error">❌ Erro na requisição: ${error.message}</p>`;
+                mostrarResultado(id, html, false);
+            }
+        }
+
+        // Teste 2: Buscar Moradores
+        async function testarBuscarMoradores() {
+            const id = 2;
+            mostrarResultado(id, '<div class="loading"></div> Testando...', false);
+            
+            try {
+                const response = await fetch('api/api_moradores.php?nome=silva', {
+                    method: 'GET'
+                });
+
+                const statusCode = response.status;
+                const text = await response.text();
+                
+                let html = `<p><strong>Status HTTP:</strong> ${statusCode}</p>`;
+                html += `<p><strong>URL:</strong> api/api_moradores.php?nome=silva</p>`;
+                html += `<hr>`;
+
+                try {
+                    const json = JSON.parse(text);
+                    html += `<p class="success">✅ Busca funcionou!</p>`;
+                    html += `<pre>${JSON.stringify(json, null, 2)}</pre>`;
+                    mostrarResultado(id, html, true);
+                } catch (e) {
+                    html += `<p class="error">❌ Erro: ${e.message}</p>`;
+                    html += `<pre>${text.substring(0, 500)}</pre>`;
+                    mostrarResultado(id, html, false);
+                }
+            } catch (error) {
+                mostrarResultado(id, `<p class="error">❌ ${error.message}</p>`, false);
+            }
+        }
+
+        // Teste 3: Carregar Unidades
+        async function testarCarregarUnidades() {
+            const id = 3;
+            mostrarResultado(id, '<div class="loading"></div> Testando...', false);
+            
+            try {
+                const response = await fetch('api/api_unidades.php?ativas=1');
+                const text = await response.text();
+                
+                let html = `<p><strong>Status HTTP:</strong> ${response.status}</p>`;
+                html += `<hr>`;
+
+                try {
+                    const json = JSON.parse(text);
+                    html += `<p class="success">✅ Unidades carregadas!</p>`;
+                    if (json.dados && Array.isArray(json.dados)) {
+                        html += `<p><strong>Total de unidades:</strong> ${json.dados.length}</p>`;
+                    }
+                    html += `<pre>${JSON.stringify(json, null, 2)}</pre>`;
+                    mostrarResultado(id, html, true);
+                } catch (e) {
+                    html += `<p class="error">❌ Erro: ${e.message}</p>`;
+                    html += `<pre>${text.substring(0, 500)}</pre>`;
+                    mostrarResultado(id, html, false);
+                }
+            } catch (error) {
+                mostrarResultado(id, `<p class="error">❌ ${error.message}</p>`, false);
+            }
+        }
+
+        // Teste 4: Teste Direto
+        function testarDireto() {
+            const id = 4;
+            const html = `
+                <p class="success">✅ Abrindo APIs em novas abas...</p>
+                <p>Verifique se as APIs retornam JSON ou erro 403.</p>
+                <ul>
+                    <li><a href="api/api_moradores.php" target="_blank">api/api_moradores.php</a></li>
+                    <li><a href="api/api_unidades.php?ativas=1" target="_blank">api/api_unidades.php</a></li>
+                    <li><a href="api/debug_erros.php" target="_blank">api/debug_erros.php</a></li>
+                </ul>
+            `;
+            mostrarResultado(id, html, true);
+            
+            window.open('api/api_moradores.php', '_blank');
+            setTimeout(() => window.open('api/api_unidades.php?ativas=1', '_blank'), 500);
+        }
+
+        // Teste 5: Verificar Caminhos
+        async function testarCaminhos() {
+            const id = 5;
+            mostrarResultado(id, '<div class="loading"></div> Testando caminhos...', false);
+            
+            const caminhos = [
+                'api/api_moradores.php',
+                'api_moradores.php',
+                '../api/api_moradores.php',
+                '/api/api_moradores.php'
+            ];
+
+            let html = '<p><strong>Testando diferentes caminhos:</strong></p><hr>';
+
+            for (const caminho of caminhos) {
+                try {
+                    const response = await fetch(caminho);
+                    const status = response.status;
+                    
+                    if (status === 200) {
+                        html += `<p class="success">✅ ${caminho} - Status ${status} (OK)</p>`;
+                    } else if (status === 403) {
+                        html += `<p class="error">❌ ${caminho} - Status ${status} (Bloqueado)</p>`;
+                    } else {
+                        html += `<p class="warning">⚠️ ${caminho} - Status ${status}</p>`;
+                    }
+                } catch (error) {
+                    html += `<p class="error">❌ ${caminho} - Erro: ${error.message}</p>`;
+                }
+            }
+
+            mostrarResultado(id, html, true);
+        }
+
+        // Testar tudo
+        async function testarTudo() {
+            await testarListarMoradores();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await testarBuscarMoradores();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await testarCarregarUnidades();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await testarCaminhos();
+        }
+    </script>
+</body>
+</html>

@@ -419,7 +419,7 @@
             if (email) params.append('email', email);
             if (cpf) params.append('cpf', cpf);
             
-            const url = 'api_moradores.php' + (params.toString() ? '?' + params.toString() : '');
+            const url = 'api/api_moradores.php' + (params.toString() ? '?' + params.toString() : '');
             
             fetch(url)
                 .then(response => response.json())
