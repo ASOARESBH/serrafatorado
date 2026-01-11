@@ -1,0 +1,137 @@
+=====================================================
+INSTRUÇÕES DE INSTALAÇÃO - MÓDULO DE ABASTECIMENTO
+=====================================================
+
+ARQUIVOS CRIADOS:
+-----------------
+1. abastecimento.html - Interface principal do módulo
+2. api_abastecimento.php - API backend para gerenciar dados
+3. sql_abastecimento.sql - Script de criação das tabelas
+4. DOCUMENTACAO_ABASTECIMENTO.md - Documentação completa
+5. manutencao.html - Atualizado com link para o módulo
+
+PASSO A PASSO DE INSTALAÇÃO:
+-----------------------------
+
+PASSO 1: CRIAR AS TABELAS NO BANCO DE DADOS
+--------------------------------------------
+1. Acesse o phpMyAdmin ou seu gerenciador de banco de dados
+2. Selecione o banco de dados: inlaud99_erpserra
+3. Clique em "SQL" ou "Importar"
+4. Execute o conteúdo do arquivo: sql_abastecimento.sql
+5. Verifique se as 4 tabelas foram criadas:
+   - abastecimento_veiculos
+   - abastecimento_lancamentos
+   - abastecimento_recargas
+   - abastecimento_saldo
+
+PASSO 2: VERIFICAR ARQUIVOS NO SERVIDOR
+----------------------------------------
+Certifique-se de que os seguintes arquivos estão no servidor:
+✓ abastecimento.html
+✓ api_abastecimento.php
+✓ manutencao.html (atualizado)
+✓ config.php (já existente)
+✓ js/auth-guard.js (já existente)
+✓ js/user-display.js (já existente)
+
+PASSO 3: CONFIGURAR PERMISSÕES
+-------------------------------
+Verifique as permissões dos arquivos:
+- Arquivos .html: 644 (rw-r--r--)
+- Arquivos .php: 644 (rw-r--r--)
+- Diretório js/: 755 (rwxr-xr-x)
+
+PASSO 4: TESTAR O MÓDULO
+-------------------------
+1. Acesse o sistema e faça login
+2. Navegue até: Manutenção > Abastecimento
+3. Teste cada funcionalidade:
+
+   A) CADASTRO DE VEÍCULOS:
+   - Clique em "Cadastro de Veículos"
+   - Preencha os dados de um veículo de teste
+   - Placa: ABC-1234 ou ABC1D23 (formato antigo ou Mercosul)
+   - Clique em "Cadastrar Veículo"
+   - Verifique se aparece na lista
+
+   B) RECARGA:
+   - Clique em "Recarga"
+   - Registre uma recarga inicial (ex: R$ 1000,00)
+   - Defina valor mínimo (ex: R$ 200,00)
+   - Clique em "Registrar Recarga"
+   - Verifique se o saldo foi atualizado
+
+   C) LANÇAMENTO:
+   - Clique em "Lançamento"
+   - Selecione o veículo cadastrado
+   - Preencha os dados do abastecimento
+   - Clique em "Registrar Abastecimento"
+   - Verifique se o saldo foi debitado
+
+   D) RELATÓRIOS:
+   - Clique em "Relatórios"
+   - Aplique filtros (opcional)
+   - Clique em "Gerar Relatório"
+   - Verifique os dados e cálculos
+
+PASSO 5: VERIFICAR LOGS (SE HOUVER ERRO)
+-----------------------------------------
+Se algo não funcionar, verifique:
+1. Console do navegador (F12) para erros JavaScript
+2. Log de erros do PHP (error_log)
+3. Verifique se a sessão está ativa
+4. Verifique se o banco de dados está acessível
+
+REQUISITOS DO SISTEMA:
+----------------------
+✓ PHP 7.0 ou superior
+✓ MySQL 5.6 ou superior
+✓ Navegador moderno (Chrome, Firefox, Edge, Safari)
+✓ Sistema de autenticação funcionando
+✓ Tabela 'usuarios' existente no banco
+
+FUNCIONALIDADES IMPLEMENTADAS:
+-------------------------------
+✓ Cadastro de veículos (placa, modelo, ano, cor, KM inicial)
+✓ Validação de placa (formato antigo e Mercosul)
+✓ Bloqueio de edição após cadastro do veículo
+✓ Lançamento de abastecimento com validação de KM
+✓ Sistema de crédito/débito (recargas)
+✓ Display de saldo com cores (verde/amarelo/vermelho)
+✓ Alerta de saldo insuficiente
+✓ Permissão para lançar com saldo negativo
+✓ Log de usuário logado em cada operação
+✓ Relatórios com filtros (veículo, período, combustível)
+✓ Cálculo automático de consumo (km/L)
+✓ Cálculo de preço médio por litro
+✓ Interface responsiva (mobile-friendly)
+✓ Integração com sistema de autenticação existente
+
+ESTRUTURA DE NAVEGAÇÃO:
+-----------------------
+Dashboard > Manutenção > Abastecimento
+  ├── Cadastro de Veículos
+  ├── Lançamento
+  ├── Recarga
+  └── Relatórios
+
+OBSERVAÇÕES IMPORTANTES:
+------------------------
+1. Após cadastrar um veículo, NÃO é possível editar os dados
+2. O KM do veículo não pode ser alterado após o cadastro
+3. Para lançar abastecimento, é necessário ter saldo (ou aceitar negativo)
+4. O sistema registra automaticamente quem estava logado
+5. O saldo é atualizado em tempo real
+6. Placas são únicas no sistema (não permite duplicatas)
+
+SUPORTE:
+--------
+Para dúvidas ou problemas:
+1. Consulte a DOCUMENTACAO_ABASTECIMENTO.md
+2. Verifique os logs de erro
+3. Entre em contato com o suporte técnico
+
+=====================================================
+INSTALAÇÃO CONCLUÍDA COM SUCESSO!
+=====================================================

@@ -1,0 +1,116 @@
+ARQUIVOS NOVOS CRIADOS PARA O SISTEMA DE ACESSO DO MORADOR
+===========================================================
+
+SISTEMA DE ACESSO DO MORADOR:
+------------------------------
+1. login_morador.html
+   - Página de login exclusiva para moradores
+   - Tamanho: ~12 KB
+
+2. validar_login_morador.php
+   - Script PHP de validação de login
+   - Tamanho: ~2.5 KB
+
+3. verificar_sessao_morador.php
+   - Script PHP de verificação de sessão
+   - Tamanho: ~0.8 KB
+
+4. logout_morador.php
+   - Script PHP de logout
+   - Tamanho: ~0.5 KB
+
+5. acesso_morador.html
+   - Página principal da área do morador (com 5 abas)
+   - Abas: Meu Cadastro, Meus Veículos, Meus Protocolos, Hidrômetro, Notificações
+   - Tamanho: ~42 KB
+
+6. api_morador_dados.php
+   - API para gerenciar dados pessoais do morador
+   - Tamanho: ~3.9 KB
+
+7. api_morador_veiculos.php
+   - API para gerenciar veículos do morador
+   - Tamanho: ~7.5 KB
+
+8. api_morador_protocolos.php
+   - API para listar protocolos do morador
+   - Tamanho: ~2.2 KB
+
+9. api_morador_hidrometro.php
+   - API para dados de hidrômetro e histórico de leituras
+   - Tamanho: ~2.8 KB
+
+10. api_morador_notificacoes.php
+    - API para notificações e downloads de anexos
+    - Tamanho: ~4.5 KB
+
+SISTEMA DE NOTIFICAÇÕES:
+-------------------------
+11. notificacoes.html
+    - Página administrativa para gerenciar notificações
+    - CRUD completo com upload de anexos
+    - Tamanho: ~28 KB
+
+12. api_notificacoes.php
+    - API backend para gerenciamento de notificações
+    - Upload de arquivos e relatórios
+    - Tamanho: ~9.5 KB
+
+13. database_notificacoes.sql
+    - Script SQL para criar tabelas de notificações
+    - Tamanho: ~2.5 KB
+
+DOCUMENTAÇÃO:
+-------------
+14. README_MORADOR.md
+    - Documentação do sistema de acesso do morador
+    - Tamanho: ~5.5 KB
+
+15. README_NOTIFICACOES.md
+    - Documentação do sistema de notificações
+    - Tamanho: ~8.0 KB
+
+ARQUIVOS MODIFICADOS:
+---------------------
+16. administrativa.html
+    - Adicionado link para notificações no menu
+
+TOTAL: 16 arquivos (15 novos + 1 modificado)
+===========================================================
+
+FUNCIONALIDADES IMPLEMENTADAS:
+
+ÁREA DO MORADOR:
+✅ Login do Morador (CPF + Senha)
+✅ Edição de Cadastro (email, telefone, celular, CPF)
+✅ Gerenciamento de Veículos (adicionar, editar, excluir)
+✅ Visualização de Protocolos (pendentes e entregues)
+✅ Dados do Hidrômetro (número, lacre, última leitura)
+✅ Histórico de Leituras (data, leitura anterior, atual, consumo, valor)
+✅ Notificações (visualizar, marcar como lida, baixar anexos)
+
+ÁREA ADMINISTRATIVA:
+✅ Cadastro de Notificações (data/hora, assunto, resumo, anexo)
+✅ Upload de Anexos (PDF, JPG, PNG até 10MB)
+✅ Edição e Exclusão de Notificações
+✅ Relatórios Detalhados (visualizações e downloads por morador)
+✅ Número Sequencial Automático
+✅ Acompanhamento de Interações dos Moradores
+
+INSTRUÇÕES DE INSTALAÇÃO:
+1. Extraia o arquivo ZIP no servidor
+2. Execute o script database_notificacoes.sql no banco de dados
+3. Crie o diretório: mkdir -p uploads/notificacoes && chmod 755 uploads/notificacoes
+4. Copie todos os arquivos para o diretório raiz do sistema
+5. Acesse login_morador.html para testar área do morador
+6. Acesse notificacoes.html para testar área administrativa
+
+ACESSO:
+- Morador: http://seudominio.com/login_morador.html
+- Admin: http://seudominio.com/notificacoes.html
+
+COMPATIBILIDADE:
+- 100% compatível com o sistema existente
+- Não interfere nas funcionalidades administrativas
+- Usa as mesmas tabelas do banco de dados
+- Tabelas utilizadas: moradores, veiculos, protocolos, hidrometros, leituras, notificacoes

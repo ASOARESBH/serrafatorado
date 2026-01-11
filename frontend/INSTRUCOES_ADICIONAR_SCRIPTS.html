@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Instruções - Adicionar Scripts de Proteção</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        h1 {
+            color: #1e293b;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #334155;
+            margin-top: 30px;
+        }
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .warning {
+            background: #fee2e2;
+            border-left: 4px solid #dc2626;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .info {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        ul {
+            line-height: 1.8;
+        }
+        .file-list {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+    </style>
+    <script src="js/sessao_manager.js"></script>
+</head>
+<body>
+    <h1>📋 Instruções para Adicionar Proteção de Login</h1>
+    
+    <div class="info">
+        <strong>✅ Solução Mantém HTML Original!</strong><br>
+        Esta solução NÃO converte HTML para PHP. Os arquivos HTML permanecem intactos!<br>
+        A proteção é feita via JavaScript que verifica a sessão no servidor.
+    </div>
+    
+    <h2>🎯 O Que Fazer</h2>
+    
+    <p>Para proteger as páginas HTML existentes, você precisa adicionar <strong>2 linhas de código</strong> em cada arquivo HTML que deseja proteger.</p>
+    
+    <h2>📝 Passo a Passo</h2>
+    
+    <h3>1. Adicionar Scripts no Final do &lt;body&gt;</h3>
+    
+    <p>Abra cada arquivo HTML (dashboard.html, moradores.html, veiculos.html, etc.) e adicione estas duas linhas <span class="highlight">ANTES do fechamento da tag &lt;/body&gt;</span>:</p>
+    
+    <div class="code-block">
+&lt;!-- Proteção de Login --&gt;
+&lt;script src="js/auth-guard.js"&gt;&lt;/script&gt;
+&lt;script src="js/user-display.js"&gt;&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+    </div>
+    
+    <h3>2. Exemplo Completo</h3>
+    
+    <p>Veja como fica no final do arquivo HTML:</p>
+    
+    <div class="code-block">
+    &lt;!-- Seu código JavaScript existente --&gt;
+    &lt;script&gt;
+        // Suas funções JavaScript aqui
+    &lt;/script&gt;
+    
+    &lt;!-- Proteção de Login (ADICIONAR ESTAS LINHAS) --&gt;
+    &lt;script src="js/auth-guard.js"&gt;&lt;/script&gt;
+    &lt;script src="js/user-display.js"&gt;&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+    </div>
+    
+    <h2>📁 Arquivos que Precisam ser Modificados</h2>
+    
+    <div class="file-list">
+        <strong>Adicione os scripts nestes arquivos HTML:</strong>
+        <ul>
+            <li>✅ dashboard.html</li>
+            <li>✅ moradores.html</li>
+            <li>✅ veiculos.html</li>
+            <li>✅ visitantes.html</li>
+            <li>✅ registro.html</li>
+            <li>✅ acesso.html</li>
+            <li>✅ relatorios.html</li>
+            <li>✅ configuracao.html</li>
+            <li>✅ manutencao.html</li>
+            <li>✅ administrativa.html</li>
+            <li>✅ cadastros.html</li>
+            <li>✅ estoque.html</li>
+            <li>✅ entrada_estoque.html</li>
+            <li>✅ saida_estoque.html</li>
+            <li>✅ relatorio_estoque.html</li>
+            <li>✅ hidrometro.html</li>
+            <li>✅ leitura.html</li>
+            <li>✅ relatorios_hidrometro.html</li>
+            <li>✅ inventario.html</li>
+            <li>✅ relatorios_inventario.html</li>
+            <li>✅ protocolo.html</li>
+            <li>✅ relatorios_protocolo.html</li>
+            <li>✅ portal.html</li>
+            <li>✅ usuarios.html</li>
+        </ul>
+    </div>
+    
+    <div class="warning">
+        <strong>⚠️ NÃO adicione nos seguintes arquivos:</strong>
+        <ul>
+            <li>❌ login.html (página de login)</li>
+            <li>❌ login_morador.html (se existir)</li>
+            <li>❌ index.html (página inicial)</li>
+        </ul>
+    </div>
+    
+    <h2>🔧 O Que os Scripts Fazem</h2>
+    
+    <h3>auth-guard.js</h3>
+    <ul>
+        <li>✅ Verifica se o usuário está logado ao carregar a página</li>
+        <li>✅ Redireciona para login.html se não estiver logado</li>
+        <li>✅ Verifica a sessão a cada 1 minuto</li>
+        <li>✅ Avisa se a sessão expirar</li>
+    </ul>
+    
+    <h3>user-display.js</h3>
+    <ul>
+        <li>✅ Adiciona o perfil do usuário no menu lateral</li>
+        <li>✅ Exibe avatar com inicial do nome</li>
+        <li>✅ Mostra nome e função do usuário</li>
+        <li>✅ Adiciona botão "Sair" no menu</li>
+    </ul>
+    
+    <h2>🎨 Resultado Visual</h2>
+    
+    <p>Após adicionar os scripts, o menu lateral ficará assim:</p>
+    
+    <div class="code-block" style="background: #334155; color: white;">
+┌─────────────────────────┐
+│  Serra da Liberdade     │
+├─────────────────────────┤
+│        ┌───┐            │
+│        │ A │  Avatar    │
+│        └───┘            │
+│   Nome do Usuário       │
+│   Administrador         │
+├─────────────────────────┤
+│ 📊 Dashboard            │
+│ 👥 Moradores            │
+│ 🚗 Veículos             │
+│ ... (menu existente)    │
+├─────────────────────────┤
+│ 🚪 Sair                 │
+└─────────────────────────┘
+    </div>
+    
+    <h2>✅ Arquivos Novos Criados</h2>
+    
+    <div class="file-list">
+        <strong>Estes arquivos foram adicionados ao sistema:</strong>
+        <ul>
+            <li>📄 index.html - Página inicial com redirecionamento</li>
+            <li>📄 login.html - Página de login</li>
+            <li>📄 validar_login.php - Validação de credenciais</li>
+            <li>📄 logout.php - Encerramento de sessão</li>
+            <li>📄 verificar_sessao.php - Verificação de sessão (backend)</li>
+            <li>📄 api_verificar_sessao.php - API REST para verificação</li>
+            <li>📄 js/auth-guard.js - Proteção de páginas</li>
+            <li>📄 js/user-display.js - Exibição de usuário</li>
+            <li>📄 gerar_senha.php - Utilitário (remover em produção)</li>
+        </ul>
+    </div>
+    
+    <h2>🚀 Instalação</h2>
+    
+    <ol>
+        <li>Copie todos os arquivos novos para a raiz do sistema</li>
+        <li>Certifique-se de que a pasta <code>js/</code> existe</li>
+        <li>Adicione as 2 linhas de script em cada HTML (conforme instruções acima)</li>
+        <li>Acesse o sistema e teste o login</li>
+    </ol>
+    
+    <h2>🔑 Credenciais de Teste</h2>
+    
+    <div class="success">
+        <strong>E-mail:</strong> serradaliberdade@outlook.com<br>
+        <strong>Senha:</strong> admin123<br>
+        <strong>Permissão:</strong> Administrador
+    </div>
+    
+    <h2>📞 Suporte</h2>
+    
+    <p>Se tiver dúvidas, consulte a documentação completa em <code>DOCUMENTACAO_LOGIN.md</code></p>
+    
+    <div class="info">
+        <strong>💡 Dica:</strong> Use o recurso "Buscar e Substituir" do seu editor de código para adicionar os scripts em todos os arquivos de uma vez!<br><br>
+        <strong>Buscar:</strong> <code>&lt;/body&gt;</code><br>
+        <strong>Substituir por:</strong><br>
+        <code>&lt;!-- Proteção de Login --&gt;<br>
+        &lt;script src="js/auth-guard.js"&gt;&lt;/script&gt;<br>
+        &lt;script src="js/user-display.js"&gt;&lt;/script&gt;<br>
+        &lt;/body&gt;</code>
+    </div>
+    
+</body>
+</html>
+

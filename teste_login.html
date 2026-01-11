@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Login - Debug</title>
+    <style>
+        body { font-family: Arial; background: #667eea; padding: 20px; }
+        .container { background: white; border-radius: 20px; padding: 40px; max-width: 900px; margin: 0 auto; }
+        h1 { color: #667eea; text-align: center; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; }
+        input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; }
+        .btn { width: 100%; padding: 14px; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+        .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; }
+        .alert-success { background: #d4edda; color: #155724; }
+        .alert-error { background: #f8d7da; color: #721c24; }
+        .debug-section { margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px; max-height: 400px; overflow-y: auto; }
+        pre { background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Teste de Login com Debug</h1>
+        <div id="alert" class="alert"></div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Endpoint:</label>
+                <input type="text" id="endpoint" value="api/validar_login_debug.php" readonly>
+            </div>
+            <div class="form-group">
+                <label>E-mail:</label>
+                <input type="email" id="email" value="serradal iberdade@outlook.com" required>
+            </div>
+            <div class="form-group">
+                <label>Senha:</label>
+                <input type="password" id="senha" required>
+            </div>
+            <button type="submit" class="btn">🔐 Testar Login</button>
+        </form>
+        <div class="debug-section" id="debugSection">
+            <h3>📊 Debug</h3>
+            <div id="debugContent"></div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('email', document.getElementById('email').value);
+            formData.append('senha', document.getElementById('senha').value);
+            try {
+                const response = await fetch(document.getElementById('endpoint').value, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                document.getElementById('alert').className = 'alert alert-' + (data.sucesso ? 'success' : 'error');
+                document.getElementById('alert').textContent = data.mensagem;
+                document.getElementById('alert').style.display = 'block';
+                document.getElementById('debugContent').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('alert').className = 'alert alert-error';
+                document.getElementById('alert').textContent = 'Erro: ' + error.message;
+                document.getElementById('alert').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

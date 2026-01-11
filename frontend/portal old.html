@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Morador - Serra da Liberdade</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; }
+        
+        /* Header */
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 1.5rem 2rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 1.5rem; }
+        .header h1 i { margin-right: 0.5rem; }
+        .user-info { display: flex; align-items: center; gap: 1rem; }
+        .user-name { font-size: 0.95rem; }
+        .btn-logout { background: rgba(255, 255, 255, 0.2); padding: 0.5rem 1rem; border: none; border-radius: 8px; color: #fff; cursor: pointer; transition: 0.2s; }
+        .btn-logout:hover { background: rgba(255, 255, 255, 0.3); }
+        
+        /* Container */
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+        
+        /* Tabs */
+        .tabs { background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); margin-bottom: 2rem; overflow: hidden; }
+        .tabs-header { display: flex; border-bottom: 2px solid #f1f5f9; overflow-x: auto; }
+        .tab-button { flex: 1; padding: 1rem; background: none; border: none; cursor: pointer; font-size: 0.95rem; color: #64748b; transition: 0.2s; white-space: nowrap; }
+        .tab-button:hover { background: #f8fafc; color: #334155; }
+        .tab-button.active { color: #667eea; border-bottom: 2px solid #667eea; font-weight: 600; }
+        .tab-button i { margin-right: 0.5rem; }
+        
+        /* Tab Content */
+        .tab-content { display: none; padding: 2rem; }
+        .tab-content.active { display: block; }
+        
+        /* Form */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { margin-bottom: 0.5rem; color: #475569; font-weight: 500; font-size: 0.9rem; }
+        .form-group input, .form-group select, .form-group textarea { padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2); }
+        .form-group input:disabled { background: #f8fafc; cursor: not-allowed; }
+        
+        /* Buttons */
+        button { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; transition: 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
+        .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
+        .btn-secondary { background: #6b7280; color: #fff; margin-left: 0.5rem; }
+        .btn-secondary:hover { background: #4b5563; }
+        .btn-success { background: #10b981; color: #fff; }
+        .btn-success:hover { background: #059669; }
+        .btn-danger { background: #ef4444; color: #fff; padding: 0.4rem 0.8rem; font-size: 0.9rem; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-edit { background: #f59e0b; color: #fff; padding: 0.4rem 0.8rem; font-size: 0.9rem; margin-right: 0.5rem; }
+        .btn-edit:hover { background: #d97706; }
+        
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.75rem; border-bottom: 1px solid #f1f5f9; text-align: left; font-size: 0.9rem; }
+        th { background: #f8fafc; font-weight: 600; color: #1e293b; }
+        tr:hover { background: #f8fafc; }
+        
+        /* Badges */
+        .badge { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem; font-weight: 500; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+        
+        /* Alert */
+        .alert { padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        .alert-success { background: #dcfce7; color: #166534; border-left: 4px solid #22c55e; }
+        .alert-error { background: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
+        .alert-info { background: #dbeafe; color: #1e40af; border-left: 4px solid #3b82f6; }
+        
+        /* Card */
+        .card { background: #fff; padding: 1.5rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); margin-bottom: 1.5rem; }
+        .card h3 { color: #1e293b; margin-bottom: 1rem; }
+        
+        /* Info Grid */
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .info-item { padding: 1rem; background: #f8fafc; border-radius: 8px; }
+        .info-item label { display: block; color: #64748b; font-size: 0.85rem; margin-bottom: 0.25rem; }
+        .info-item strong { color: #1e293b; font-size: 1rem; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 0 1rem; }
+            .header-content { flex-direction: column; gap: 1rem; }
+            .tabs-header { flex-direction: column; }
+            .tab-button { border-bottom: 1px solid #f1f5f9; }
+            .tab-content { padding: 1rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            th, td { padding: 0.5rem; font-size: 0.85rem; }
+        }
+    </style>
+    <script src="js/sessao_manager.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1><i class="fas fa-home"></i> Portal do Morador</h1>
+            <div class="user-info">
+                <span class="user-name"><i class="fas fa-user"></i> <span id="nomeUsuario">Carregando...</span></span>
+                <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="alertContainer"></div>
+
+        <div class="tabs">
+            <div class="tabs-header">
+                <button class="tab-button active" onclick="mudarAba('perfil')">
+                    <i class="fas fa-user"></i> Meu Perfil
+                </button>
+                <button class="tab-button" onclick="mudarAba('hidrometro')">
+                    <i class="fas fa-tint"></i> Hidrometro
+                </button>
+                <button class="tab-button" onclick="mudarAba('veiculos')">
+                    <i class="fas fa-car"></i> Veículos
+                </button>
+                <button class="tab-button" onclick="mudarAba('visitantes')">
+                    <i class="fas fa-user-friends"></i> Visitantes
+                </button>
+            </div>
+
+            <!-- ABA: MEU PERFIL -->
+            <div id="tab-perfil" class="tab-content active">
+                <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-user-circle"></i> Meus Dados</h2>
+                
+                <div class="card">
+                    <h3>Informações Pessoais</h3>
+                    <form id="formPerfil">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nome Completo *</label>
+                                <input type="text" id="perfilNome" required>
+                            </div>
+                            <div class="form-group">
+                                <label>CPF</label>
+                                <input type="text" id="perfilCPF" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="perfilEmail">
+                            </div>
+                            <div class="form-group">
+                                <label>Telefone</label>
+                                <input type="text" id="perfilTelefone">
+                            </div>
+                            <div class="form-group">
+                                <label>Celular</label>
+                                <input type="text" id="perfilCelular">
+                            </div>
+                            <div class="form-group">
+                                <label>Unidade</label>
+                                <input type="text" id="perfilUnidade" disabled>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Salvar Alterações
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Alterar Senha</h3>
+                    <form id="formSenha">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Senha Atual *</label>
+                                <input type="password" id="senhaAtual" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nova Senha *</label>
+                                <input type="password" id="senhaNova" required minlength="6">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirmar Nova Senha *</label>
+                                <input type="password" id="senhaConfirmacao" required minlength="6">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-key"></i> Alterar Senha
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ABA: HIDROMETRO -->
+            <div id="tab-hidrometro" class="tab-content">
+                <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-tint"></i> Hidrometro e Consumo</h2>
+                
+                <div class="card">
+                    <h3>Dados do Hidrometro</h3>
+                    <div class="info-grid" id="infoHidrometro">
+                        <div class="info-item">
+                            <label>Número do Hidrometro</label>
+                            <strong id="hidroNumero">-</strong>
+                        </div>
+                        <div class="info-item">
+                            <label>Localização</label>
+                            <strong id="hidroLocalizacao">-</strong>
+                        </div>
+                        <div class="info-item">
+                            <label>Status</label>
+                            <strong id="hidroStatus">-</strong>
+                        </div>
+                        <div class="info-item">
+                            <label>Data de Instalação</label>
+                            <strong id="hidroDataInstalacao">-</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Histórico de Consumo</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mês/Ano</th>
+                                    <th>Leitura Anterior</th>
+                                    <th>Leitura Atual</th>
+                                    <th>Consumo (m³)</th>
+                                    <th>Valor</th>
+                                    <th>Vencimento</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaLancamentos">
+                                <tr><td colspan="7" style="text-align: center;">Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA: VEÍCULOS -->
+            <div id="tab-veiculos" class="tab-content">
+                <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-car"></i> Meus Veículos</h2>
+                
+                <div class="card">
+                    <h3><span id="veiculoFormTitle">Cadastrar Veículo</span></h3>
+                    <form id="formVeiculo">
+                        <input type="hidden" id="veiculoId">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Placa *</label>
+                                <input type="text" id="veiculoPlaca" required maxlength="8" placeholder="ABC-1234" style="text-transform: uppercase;">
+                            </div>
+                            <div class="form-group">
+                                <label>Tipo de Veículo *</label>
+                                <select id="veiculoTipo" required>
+                                    <option value="">Selecione</option>
+                                    <option value="Carro">Carro</option>
+                                    <option value="Moto">Moto</option>
+                                    <option value="Caminhonete">Caminhonete</option>
+                                    <option value="Van">Van</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Modelo</label>
+                                <input type="text" id="veiculoModelo" placeholder="Ex: Civic, Corolla">
+                            </div>
+                            <div class="form-group">
+                                <label>Cor</label>
+                                <input type="text" id="veiculoCor" placeholder="Ex: Preto, Branco">
+                            </div>
+                            <div class="form-group">
+                                <label>TAG</label>
+                                <input type="text" id="veiculoTag" placeholder="Número da TAG">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-success">
+                            <i class="fas fa-plus"></i> <span id="btnVeiculoTexto">Cadastrar Veículo</span>
+                        </button>
+                        <button type="button" class="btn-secondary" onclick="limparFormVeiculo()">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Veículos Cadastrados</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Placa</th>
+                                    <th>Tipo</th>
+                                    <th>Modelo</th>
+                                    <th>Cor</th>
+                                    <th>TAG</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaVeiculos">
+                                <tr><td colspan="6" style="text-align: center;">Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA: VISITANTES -->
+            <div id="tab-visitantes" class="tab-content">
+                <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-user-friends"></i> Cadastrar Visitante</h2>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> 
+                    <strong>Atenção:</strong> Você pode cadastrar visitantes, mas não pode editar ou consultar visitantes já cadastrados no sistema.
+                </div>
+
+                <div class="card">
+                    <h3>Novo Visitante</h3>
+                    <form id="formVisitante">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nome Completo *</label>
+                                <input type="text" id="visitanteNome" required placeholder="Nome do visitante">
+                            </div>
+                            <div class="form-group">
+                                <label>CPF *</label>
+                                <input type="text" id="visitanteCPF" required placeholder="000.000.000-00" maxlength="14">
+                            </div>
+                            <div class="form-group">
+                                <label>Telefone</label>
+                                <input type="text" id="visitanteTelefone" placeholder="(00) 00000-0000">
+                            </div>
+                            <div class="form-group">
+                                <label>Tipo *</label>
+                                <select id="visitanteTipo" required>
+                                    <option value="visitante">Visitante</option>
+                                    <option value="prestador">Prestador de Serviço</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-success">
+                            <i class="fas fa-user-plus"></i> Cadastrar Visitante
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let token = localStorage.getItem('portal_token');
+        let moradorId = localStorage.getItem('morador_id');
+        let moradorNome = localStorage.getItem('morador_nome');
+        let veiculoEditando = null;
+
+        // Verificar autenticação
+        if (!token) {
+            window.location.href = 'login_morador.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            verificarSessao();
+            carregarPerfil();
+            
+            // Formulários
+            document.getElementById('formPerfil').addEventListener('submit', salvarPerfil);
+            document.getElementById('formSenha').addEventListener('submit', alterarSenha);
+            document.getElementById('formVeiculo').addEventListener('submit', salvarVeiculo);
+            document.getElementById('formVisitante').addEventListener('submit', cadastrarVisitante);
+            
+            // Máscaras
+            aplicarMascaras();
+        });
+
+        function verificarSessao() {
+            fetch('api/api_portal.php?action=verificar_sessao', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (!data.sucesso) {
+                    localStorage.clear();
+                    window.location.href = 'login_morador.html';
+                }
+            });
+        }
+
+        function carregarPerfil() {
+            document.getElementById('nomeUsuario').textContent = moradorNome;
+            
+            fetch('api/api_portal.php?action=perfil', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.sucesso) {
+                    const p = data.dados;
+                    document.getElementById('perfilNome').value = p.nome || '';
+                    document.getElementById('perfilCPF').value = formatarCPF(p.cpf) || '';
+                    document.getElementById('perfilEmail').value = p.email || '';
+                    document.getElementById('perfilTelefone').value = p.telefone || '';
+                    document.getElementById('perfilCelular').value = p.celular || '';
+                    document.getElementById('perfilUnidade').value = p.unidade || '';
+                }
+            });
+        }
+
+        function salvarPerfil(e) {
+            e.preventDefault();
+            
+            const dados = {
+                nome: document.getElementById('perfilNome').value,
+                email: document.getElementById('perfilEmail').value,
+                telefone: document.getElementById('perfilTelefone').value,
+                celular: document.getElementById('perfilCelular').value
+            };
+
+            fetch('api/api_portal.php?action=perfil', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.sucesso) {
+                    mostrarAlerta(data.mensagem, 'success');
+                    localStorage.setItem('morador_nome', dados.nome);
+                    document.getElementById('nomeUsuario').textContent = dados.nome;
+                } else {
+                    mostrarAlerta(data.mensagem, 'error');
+                }
+            });
+        }
+
+        function alterarSenha(e) {
+            e.preventDefault();
+            
+            const dados = {
+                senha_atual: document.getElementById('senhaAtual').value,
+                senha_nova: document.getElementById('senhaNova').value,
+                senha_confirmacao: document.getElementById('senhaConfirmacao').value
+            };
+
+            fetch('api/api_portal.php?action=alterar_senha', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.sucesso) {
+                    mostrarAlerta(data.mensagem, 'success');
+                    document.getElementById('formSenha').reset();
+                } else {
+                    mostrarAlerta(data.mensagem, 'error');
+                }
+            });
+        }
+
+        function mudarAba(aba) {
+            // Remover active de todos
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Ativar selecionado
+            event.target.closest('.tab-button').classList.add('active');
+            document.getElementById('tab-' + aba).classList.add('active');
+            
+            // Carregar dados da aba
+            if (aba === 'hidrometro') {
+                carregarHidrometro();
+                carregarLancamentos();
+            } else if (aba === 'veiculos') {
+                carregarVeiculos();
+            }
+        }
+
+        function carregarHidrometro() {
+            fetch('api/api_portal.php?action=hidrometro', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.sucesso) {
+                    const h = data.dados;
+                    document.getElementById('hidroNumero').textContent = h.numero_hidrometro || '-';
+                    document.getElementById('hidroLocalizacao').textContent = h.localizacao || '-';
+                    document.getElementById('hidroStatus').textContent = h.status || '-';
+                    document.getElementById('hidroDataInstalacao').textContent = h.data_instalacao ? formatarData(h.data_instalacao) : '-';
+                } else {
+                    document.getElementById('infoHidrometro').innerHTML = '<p style="color: #991b1b;">Hidrômetro não encontrado</p>';
+                }
+            });
+        }
+
+        function carregarLancamentos() {
+            fetch('api/api_portal.php?action=lancamentos_agua', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(r => r.json())
+            .then(data => {
+                const tbody = document.getElementById('tabelaLancamentos');
+                
+                if (data.sucesso && data.dados.length > 0) {
+                    tbody.innerHTML = data.dados.map(l => `
+                        <tr>
+                            <td>${l.mes_referencia}</td>
+                            <td>${parseFloat(l.leitura_anterior).toFixed(2)} m³</td>
+                            <td>${parseFloat(l.leitura_atual).toFixed(2)} m³</td>
+                            <td><strong>${parseFloat(l.consumo).toFixed(2)} m³</strong></td>
+                            <td>R$ ${parseFloat(l.valor_total || 0).toFixed(2)}</td>
+                            <td>${l.data_vencimento_formatada}</td>
+                            <td><span class="badge badge-${l.status_pagamento === 'pago' ? 'success' : l.status_pagamento === 'pendente' ? 'warning' : 'danger'}">${l.status_pagamento}</span></td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Nenhum lançamento encontrado</td></tr>';
+                }
+            });
+        }
+
+        function carregarVeiculos() {
+            fetch('api/api_portal.php?action=veiculos', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(r => r.json())
+            .then(data => {
+                const tbody = document.getElementById('tabelaVeiculos');
+                
+                if (data.sucesso && data.dados.length > 0) {
+                    tbody.innerHTML = data.dados.map(v => `
+                        <tr>
+                            <td><strong>${v.placa}</strong></td>
+                            <td>${v.veiculo}</td>
+                            <td>${v.modelo || '-'}</td>
+                            <td>${v.cor || '-'}</td>
+                            <td>${v.tag || '-'}</td>
+                            <td>
+                                <button class="btn-edit" onclick="editarVeiculo(${v.id})"><i class="fas fa-edit"></i> Editar</button>
+                                <button class="btn-danger" onclick="excluirVeiculo(${v.id}, '${v.placa}')"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nenhum veículo cadastrado</td></tr>';
+                }
+            });
+        }
+
+        function salvarVeiculo(e) {
+            e.preventDefault();
+            
+            const dados = {
+                placa: document.getElementById('veiculoPlaca').value.toUpperCase(),
+                veiculo: document.getElementById('veiculoTipo').value,
+                modelo: document.getElementById('veiculoModelo').value,
+                cor: document.getElementById('veiculoCor').value,
+                tag: document.getElementById('veiculoTag').value
+            };
+
+            const metodo = veiculoEditando ? 'PUT' : 'POST';
+            if (veiculoEditando) {
+                dados.id = veiculoEditando;
+            }
+
+            fetch('api/api_portal.php?action=veiculos', {
+                method: metodo,
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.sucesso) {
+                    mostrarAlerta(data.mensagem, 'success');
+                    limparFormVeiculo();
+                    carregarVeiculos();
+                } else {
+                    mostrarAlerta(data.mensagem, 'error');
+                }
+            });
+        }
+
+        function editarVeiculo(id) {
+            fetch('api/api_portal.php?action=veiculos', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.sucesso) {
+                    const veiculo = data.dados.find(v => v.id == id);
+                    if (veiculo) {
+                        document.getElementById('veiculoId').value = veiculo.id;
+                        document.getElementById('veiculoPlaca').value = veiculo.placa;
+                        document.getElementById('veiculoPlaca').disabled = true; // Não pode editar placa
+                        document.getElementById('veiculoTipo').value = veiculo.veiculo;
+                        document.getElementById('veiculoModelo').value = veiculo.modelo || '';
+                        document.getElementById('veiculoCor').value = veiculo.cor || '';
+                        document.getElementById('veiculoTag').value = veiculo.tag || '';
+                        document.getElementById('veiculoTag').disabled = true; // Não pode editar TAG
+                        
+                        veiculoEditando = id;
+                        document.getElementById('veiculoFormTitle').textContent = 'Editar Veículo';
+                        document.getElementById('btnVeiculoTexto').textContent = 'Atualizar Veículo';
+                        
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                }
+            });
+        }
+
+        function excluirVeiculo(id, placa) {
+            if (!confirm(`Deseja realmente excluir o veículo ${placa}?`)) {
+                return;
+            }
+
+            fetch('api/api_portal.php?action=veiculos', {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: id })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.sucesso) {
+                    mostrarAlerta(data.mensagem, 'success');
+                    carregarVeiculos();
+                } else {
+                    mostrarAlerta(data.mensagem, 'error');
+                }
+            });
+        }
+
+        function limparFormVeiculo() {
+            document.getElementById('formVeiculo').reset();
+            document.getElementById('veiculoId').value = '';
+            document.getElementById('veiculoPlaca').disabled = false;
+            document.getElementById('veiculoTag').disabled = false;
+            veiculoEditando = null;
+            document.getElementById('veiculoFormTitle').textContent = 'Cadastrar Veículo';
+            document.getElementById('btnVeiculoTexto').textContent = 'Cadastrar Veículo';
+        }
+
+        function cadastrarVisitante(e) {
+            e.preventDefault();
+            
+            const dados = {
+                nome: document.getElementById('visitanteNome').value,
+                cpf: document.getElementById('visitanteCPF').value.replace(/\D/g, ''),
+                telefone: document.getElementById('visitanteTelefone').value,
+                tipo: document.getElementById('visitanteTipo').value
+            };
+
+            fetch('api/api_portal.php?action=visitantes', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.sucesso) {
+                    mostrarAlerta(data.mensagem, 'success');
+                    document.getElementById('formVisitante').reset();
+                } else {
+                    mostrarAlerta(data.mensagem, 'error');
+                }
+            });
+        }
+
+        function logout() {
+            fetch('api/api_portal.php?action=logout', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(() => {
+                localStorage.clear();
+                window.location.href = 'login_morador.html';
+            });
+        }
+
+        function mostrarAlerta(mensagem, tipo) {
+            const container = document.getElementById('alertContainer');
+            const div = document.createElement('div');
+            div.className = `alert alert-${tipo}`;
+            div.innerHTML = `<i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${mensagem}`;
+            container.appendChild(div);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => div.remove(), 5000);
+        }
+
+        function aplicarMascaras() {
+            // Máscara CPF
+            document.getElementById('visitanteCPF').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length <= 11) {
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                    e.target.value = value;
+                }
+            });
+        }
+
+        function formatarCPF(cpf) {
+            if (!cpf) return '';
+            cpf = cpf.replace(/\D/g, '');
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        }
+
+        function formatarData(data) {
+            if (!data) return '';
+            const d = new Date(data + 'T00:00:00');
+            return d.toLocaleDateString('pt-BR');
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Teste - Sistema de Controle de Acesso</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        h1 { color: #333; margin-bottom: 20px; }
+        .section { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .section h2 { color: #666; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .loading { color: #999; font-style: italic; }
+        .success { color: #28a745; }
+        .error { color: #dc3545; background: #fee; padding: 10px; border-radius: 4px; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 12px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        .stat-card { background: #f8f9fa; padding: 15px; border-radius: 6px; border-left: 4px solid #007bff; }
+        .stat-card h3 { font-size: 14px; color: #666; margin-bottom: 5px; }
+        .stat-card .value { font-size: 24px; font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Dashboard Teste - Diagnóstico de APIs</h1>
+    
+    <div class="section">
+        <h2>1. Estatísticas Gerais</h2>
+        <div id="estatisticas" class="loading">Carregando...</div>
+    </div>
+    
+    <div class="section">
+        <h2>2. Saldo de Abastecimento</h2>
+        <div id="saldo" class="loading">Carregando...</div>
+    </div>
+    
+    <div class="section">
+        <h2>3. Top 10 Consumo de Água</h2>
+        <div id="topConsumo" class="loading">Carregando...</div>
+    </div>
+    
+    <div class="section">
+        <h2>4. Último Lançamento de Abastecimento</h2>
+        <div id="ultimoLancamento" class="loading">Carregando...</div>
+    </div>
+    
+    <div class="section">
+        <h2>5. Histórico de Abastecimentos</h2>
+        <div id="historico" class="loading">Carregando...</div>
+    </div>
+
+    <script>
+        const API_BASE = '../api/api_dashboard_agua.php';
+        
+        function log(msg, data = null) {
+            console.log('[Dashboard Teste]', msg, data || '');
+        }
+        
+        function mostrarErro(elementId, erro) {
+            const el = document.getElementById(elementId);
+            el.className = 'error';
+            el.innerHTML = `<strong>❌ Erro:</strong> ${erro}`;
+        }
+        
+        function mostrarSucesso(elementId, dados) {
+            const el = document.getElementById(elementId);
+            el.className = 'success';
+            el.innerHTML = `<strong>✅ Sucesso!</strong><pre>${JSON.stringify(dados, null, 2)}</pre>`;
+        }
+        
+        // 1. Estatísticas Gerais
+        fetch(API_BASE + '?estatisticas_gerais=1')
+            .then(response => {
+                log('Estatísticas - Status:', response.status);
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.json();
+            })
+            .then(data => {
+                log('Estatísticas - Dados:', data);
+                if (data.sucesso && data.dados) {
+                    const d = data.dados;
+                    const html = `
+                        <div class="stats">
+                            <div class="stat-card">
+                                <h3>Total de Moradores</h3>
+                                <div class="value">${d.total_moradores || 0}</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Consumo Total de Água</h3>
+                                <div class="value">${(d.total_consumo_agua || 0).toFixed(2)} m³</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Valor Total de Água</h3>
+                                <div class="value">R$ ${(d.total_valor_agua || 0).toFixed(2)}</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>Consumo Médio/Morador</h3>
+                                <div class="value">${(d.consumo_medio_por_morador || 0).toFixed(2)} m³</div>
+                            </div>
+                        </div>
+                        <pre style="margin-top:15px;">${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    document.getElementById('estatisticas').innerHTML = html;
+                    document.getElementById('estatisticas').className = 'success';
+                } else {
+                    mostrarErro('estatisticas', data.mensagem || 'Dados inválidos');
+                }
+            })
+            .catch(error => {
+                log('Estatísticas - Erro:', error);
+                mostrarErro('estatisticas', error.message);
+            });
+        
+        // 2. Saldo de Abastecimento
+        fetch(API_BASE + '?saldo_abastecimento=1')
+            .then(response => {
+                log('Saldo - Status:', response.status);
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.json();
+            })
+            .then(data => {
+                log('Saldo - Dados:', data);
+                mostrarSucesso('saldo', data);
+            })
+            .catch(error => {
+                log('Saldo - Erro:', error);
+                mostrarErro('saldo', error.message);
+            });
+        
+        // 3. Top Consumo
+        fetch(API_BASE + '?top_consumo_agua=1')
+            .then(response => {
+                log('Top Consumo - Status:', response.status);
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.json();
+            })
+            .then(data => {
+                log('Top Consumo - Dados:', data);
+                mostrarSucesso('topConsumo', data);
+            })
+            .catch(error => {
+                log('Top Consumo - Erro:', error);
+                mostrarErro('topConsumo', error.message);
+            });
+        
+        // 4. Último Lançamento
+        fetch(API_BASE + '?ultimo_lancamento_abastecimento=1')
+            .then(response => {
+                log('Último Lançamento - Status:', response.status);
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.json();
+            })
+            .then(data => {
+                log('Último Lançamento - Dados:', data);
+                mostrarSucesso('ultimoLancamento', data);
+            })
+            .catch(error => {
+                log('Último Lançamento - Erro:', error);
+                mostrarErro('ultimoLancamento', error.message);
+            });
+        
+        // 5. Histórico
+        fetch(API_BASE + '?historico_abastecimentos=1')
+            .then(response => {
+                log('Histórico - Status:', response.status);
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.json();
+            })
+            .then(data => {
+                log('Histórico - Dados:', data);
+                mostrarSucesso('historico', data);
+            })
+            .catch(error => {
+                log('Histórico - Erro:', error);
+                mostrarErro('historico', error.message);
+            });
+    </script>
+</body>
+</html>
