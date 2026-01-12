@@ -30,7 +30,7 @@
         
         verificandoSessao = true;
         
-        fetch('api_verificar_sessao.php', {
+        fetch('../api/api_verificar_sessao.php', {
             method: 'GET',
             cache: 'no-cache',
             credentials: 'same-origin',

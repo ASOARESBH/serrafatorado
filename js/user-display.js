@@ -94,7 +94,7 @@
         const sairHTML = `
             <div class="nav-divider"></div>
             <li class="nav-item">
-                <a href="logout.php" class="nav-link nav-link-logout" onclick="return confirm('Deseja realmente sair do sistema?');">
+                <a href="../api/logout.php" class="nav-link nav-link-logout" onclick="return confirm('Deseja realmente sair do sistema?');">
                     <i class="fas fa-sign-out-alt"></i> Sair
                 </a>
             </li>

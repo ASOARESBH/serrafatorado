@@ -11,7 +11,7 @@ class SessaoManager {
     constructor() {
         this.intervaloVerificacao = 60000; // Verificar a cada 1 minuto
         this.intervaloRenovacao = 300000; // Renovar a cada 5 minutos
-        this.apiBase = '../api/';
+        this.apiBase = '../../api/';
         this.timeoutId = null;
         this.renovacaoId = null;
         this.sessaoAtiva = false;
@@ -222,7 +222,7 @@ class SessaoManager {
         
         // Aguardar 2 segundos e redirecionar
         setTimeout(() => {
-            window.location.href = '../login.html';
+            window.location.href = 'login.html';
         }, 2000);
     }
     
