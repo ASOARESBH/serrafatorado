@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Morador - Serra da Liberdade</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; }
+        
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s;
+        }
+        .loading-screen.hide { opacity: 0; pointer-events: none; }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: #fff;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Header */
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 1.5rem 2rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 1.5rem; }
+        .header h1 i { margin-right: 0.5rem; }
+        .user-info { display: flex; align-items: center; gap: 1rem; }
+        .user-name { font-size: 0.95rem; }
+        .btn-logout { background: rgba(255, 255, 255, 0.2); padding: 0.5rem 1rem; border: none; border-radius: 8px; color: #fff; cursor: pointer; transition: 0.2s; }
+        .btn-logout:hover { background: rgba(255, 255, 255, 0.3); }
+        
+        /* Container */
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+        
+        /* Alert */
+        .alert { padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: none; }
+        .alert.show { display: block; }
+        .alert-success { background: #dcfce7; color: #166534; border-left: 4px solid #22c55e; }
+        .alert-error { background: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
+        .alert-info { background: #dbeafe; color: #1e40af; border-left: 4px solid #3b82f6; }
+        
+        /* Card */
+        .card { background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); margin-bottom: 1.5rem; }
+        .card h2 { color: #1e293b; margin-bottom: 1rem; }
+        .card p { color: #64748b; line-height: 1.6; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 0 1rem; }
+            .header-content { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+    <script src="js/sessao_manager.js"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Verificando sessão...</div>
+    </div>
+
+    <!-- Header -->
+    <header class="header" style="display:none;" id="mainHeader">
+        <div class="header-content">
+            <h1><i class="fas fa-home"></i> Portal do Morador</h1>
+            <div class="user-info">
+                <span class="user-name"><i class="fas fa-user"></i> <span id="nomeUsuario">Carregando...</span></span>
+                <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Container -->
+    <div class="container" style="display:none;" id="mainContainer">
+        <div id="alertContainer"></div>
+        
+        <div class="card">
+            <h2><i class="fas fa-check-circle" style="color:#22c55e;"></i> Portal Carregado com Sucesso!</h2>
+            <p>Bem-vindo ao Portal do Morador do Condomínio Serra da Liberdade.</p>
+            <p>Seu portal está funcionando corretamente. Em breve, você terá acesso a:</p>
+            <ul style="margin-top:1rem; margin-left:2rem; color:#64748b;">
+                <li>Gestão de Perfil</li>
+                <li>Consulta de Hidrometro</li>
+                <li>Cadastro de Veículos</li>
+                <li>Cadastro de Visitantes</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // ========== VARIÁVEIS GLOBAIS ==========
+        let token = null;
+        let moradorId = null;
+        let moradorNome = null;
+        let sessaoVerificada = false;
+        let tentativasVerificacao = 0;
+        const MAX_TENTATIVAS = 3;
+
+        // ========== INICIALIZAÇÃO ==========
+        (function() {
+            console.log('🔄 Iniciando portal...');
+            console.log('📍 URL:', window.location.href);
+            
+            // Obter dados do localStorage
+            token = localStorage.getItem('portal_token');
+            moradorId = localStorage.getItem('morador_id');
+            moradorNome = localStorage.getItem('morador_nome');
+            
+            console.log('📦 Token:', token ? token.substring(0, 20) + '...' : 'null');
+            console.log('📦 Morador ID:', moradorId);
+            console.log('📦 Morador Nome:', moradorNome);
+            
+            // Verificar se tem token
+            if (!token || !moradorId) {
+                console.log('❌ Sem token ou morador_id');
+                redirecionarParaLogin('Sessão não encontrada. Faça login novamente.');
+                return;
+            }
+            
+            // Verificar sessão no servidor
+            verificarSessao();
+        })();
+
+        // ========== VERIFICAR SESSÃO ==========
+        function verificarSessao() {
+            tentativasVerificacao++;
+            console.log(`🔍 Verificando sessão (tentativa ${tentativasVerificacao}/${MAX_TENTATIVAS})...`);
+            
+            document.getElementById('loadingText').textContent = `Verificando sessão... (${tentativasVerificacao}/${MAX_TENTATIVAS})`;
+            
+            fetch('api/api_portal.php?action=verificar_sessao', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                console.log('📡 Status HTTP:', response.status);
+                console.log('📡 Status Text:', response.statusText);
+                console.log('📡 Headers:', response.headers);
+                
+                // Se não for 200, tentar ler como texto para ver o erro
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        console.error('❌ Resposta não-OK:', text);
+                        throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
+                    });
+                }
+                
+                return response.json();
+            })
+            .then(data => {
+                console.log('📨 Resposta da API:', data);
+                
+                if (data.sucesso) {
+                    console.log('✅ Sessão válida!');
+                    sessaoVerificada = true;
+                    inicializarPortal();
+                } else {
+                    console.log('❌ Sessão inválida:', data.mensagem);
+                    redirecionarParaLogin(data.mensagem || 'Sessão expirada');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Erro ao verificar sessão:', error);
+                console.error('❌ Stack:', error.stack);
+                
+                // Tentar novamente se não atingiu o máximo
+                if (tentativasVerificacao < MAX_TENTATIVAS) {
+                    console.log(`⏳ Tentando novamente em 2 segundos...`);
+                    setTimeout(verificarSessao, 2000);
+                } else {
+                    console.error('❌ Máximo de tentativas atingido');
+                    document.getElementById('loadingText').textContent = 'Erro ao conectar com o servidor';
+                    
+                    // Mostrar erro detalhado
+                    setTimeout(() => {
+                        if (confirm('Erro ao verificar sessão. Deseja ver os detalhes no console?')) {
+                            console.error('=== DETALHES DO ERRO ===');
+                            console.error('Token:', token);
+                            console.error('Morador ID:', moradorId);
+                            console.error('Erro:', error);
+                            console.error('========================');
+                        }
+                        redirecionarParaLogin('Erro ao conectar com o servidor. Tente novamente.');
+                    }, 2000);
+                }
+            });
+        }
+
+        // ========== INICIALIZAR PORTAL ==========
+        function inicializarPortal() {
+            console.log('🚀 Inicializando portal...');
+            
+            // Esconder loading
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hide');
+                
+                // Mostrar conteúdo
+                document.getElementById('mainHeader').style.display = 'block';
+                document.getElementById('mainContainer').style.display = 'block';
+                
+                // Atualizar nome do usuário
+                document.getElementById('nomeUsuario').textContent = moradorNome || 'Morador';
+                
+                console.log('✅ Portal inicializado com sucesso!');
+                
+                mostrarAlerta('Portal carregado com sucesso!', 'success');
+            }, 500);
+        }
+
+        // ========== REDIRECIONAR PARA LOGIN ==========
+        function redirecionarParaLogin(mensagem) {
+            console.log('🔄 Redirecionando para login:', mensagem);
+            
+            // Limpar localStorage
+            localStorage.clear();
+            
+            // Salvar mensagem para exibir no login
+            sessionStorage.setItem('mensagem_logout', mensagem);
+            
+            // Aguardar 1 segundo antes de redirecionar
+            setTimeout(() => {
+                window.location.href = 'login_morador.html';
+            }, 1000);
+        }
+
+        // ========== LOGOUT ==========
+        function logout() {
+            if (!confirm('Deseja realmente sair do portal?')) {
+                return;
+            }
+            
+            console.log('👋 Fazendo logout...');
+            
+            fetch('api/api_portal.php?action=logout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('📨 Resposta do logout:', data);
+                redirecionarParaLogin('Logout realizado com sucesso');
+            })
+            .catch(error => {
+                console.error('❌ Erro no logout:', error);
+                redirecionarParaLogin('Logout realizado');
+            });
+        }
+
+        // ========== MOSTRAR ALERTA ==========
+        function mostrarAlerta(mensagem, tipo = 'info') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${tipo} show`;
+            alert.innerHTML = `<i class="fas fa-${tipo === 'success' ? 'check-circle' : tipo === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${mensagem}`;
+            
+            container.innerHTML = '';
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 300);
+            }, 5000);
+        }
+
+        // ========== PREVENIR NAVEGAÇÃO SEM SESSÃO ==========
+        window.addEventListener('beforeunload', function() {
+            if (!sessaoVerificada) {
+                localStorage.clear();
+            }
+        });
+
+        // ========== DEBUG: Expor funções globalmente ==========
+        window.debugPortal = {
+            token: () => token,
+            moradorId: () => moradorId,
+            moradorNome: () => moradorNome,
+            sessaoVerificada: () => sessaoVerificada,
+            verificarSessao: verificarSessao,
+            localStorage: () => ({
+                portal_token: localStorage.getItem('portal_token'),
+                morador_id: localStorage.getItem('morador_id'),
+                morador_nome: localStorage.getItem('morador_nome')
+            })
+        };
+        
+        console.log('💡 Debug disponível em: window.debugPortal');
+    </script>
+    <!-- Proteção de Login -->
+    <script src="js/auth-guard.js"></script>
+    <script src="js/user-display.js"></script>
+</body>
+</html>
+

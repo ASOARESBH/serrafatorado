@@ -43,7 +43,7 @@
     
     <script>
         // Verificar se usuário está logado via API
-        fetch('api/api_verificar_sessao.php')
+        fetch('../api/api_verificar_sessao.php')
             .then(response => response.json())
             .then(data => {
                 if (data.sucesso && data.logado) {

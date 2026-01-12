@@ -320,7 +320,7 @@
         
         async function carregarPlanos() {
             try {
-                const res = await fetch('api/api_planos_contas.php?acao=listar');
+                const res = await fetch('../api/api_planos_contas.php?acao=listar');
                 const data = await res.json();
                 
                 if (data.sucesso && data.dados) {
@@ -357,7 +357,7 @@
             formData.append('acao', 'cadastrar');
             
             try {
-                const res = await fetch('api/api_planos_contas.php', { method: 'POST', body: formData });
+                const res = await fetch('../api/api_planos_contas.php', { method: 'POST', body: formData });
                 const data = await res.json();
                 
                 if (data.sucesso) {
@@ -403,7 +403,7 @@
             formData.append('acao', 'atualizar');
             
             try {
-                const res = await fetch('api/api_planos_contas.php', { method: 'POST', body: formData });
+                const res = await fetch('../api/api_planos_contas.php', { method: 'POST', body: formData });
                 const data = await res.json();
                 
                 if (data.sucesso) {
@@ -426,7 +426,7 @@
             formData.append('id', id);
             
             try {
-                const res = await fetch('api/api_planos_contas.php', { method: 'POST', body: formData });
+                const res = await fetch('../api/api_planos_contas.php', { method: 'POST', body: formData });
                 const data = await res.json();
                 
                 if (data.sucesso) {

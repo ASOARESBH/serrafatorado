@@ -249,7 +249,7 @@
 
         // Carregar estatísticas
         function carregarEstatisticas() {
-            fetch('api/api_email_log.php?acao=estatisticas')
+            fetch('../api/api_email_log.php?acao=estatisticas')
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso && data.dados) {

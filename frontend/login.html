@@ -290,7 +290,7 @@
             const formData = new FormData(loginForm);
             
             // Enviar requisição para API
-            fetch('api/validar_login.php', {
+            fetch('../api/validar_login.php', {
                 method: 'POST',
                 body: formData,
                 credentials: 'include'
@@ -347,7 +347,7 @@
         
         // Verificar se já está logado ao carregar a página
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('api/verificar_sessao.php', {
+            fetch('../api/verificar_sessao.php', {
                 method: 'GET',
                 credentials: 'include'
             })

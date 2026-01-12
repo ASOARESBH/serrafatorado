@@ -44,7 +44,7 @@
         let checklistSelecionado = null;
         document.addEventListener('DOMContentLoaded', () => { carregarAbertos(); });
         function carregarAbertos() {
-            fetch('api/api_checklist.php?acao=listar_abertos')
+            fetch('../api/api_checklist.php?acao=listar_abertos')
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -106,7 +106,7 @@
             formData1.append('acao', 'salvar_fechamento');
             formData1.append('checklist_id', document.getElementById('checklistId').value);
             formData1.append('itens', JSON.stringify(itens));
-            fetch('api/api_checklist_itens.php', { method: 'POST', body: formData1 })
+            fetch('../api/api_checklist_itens.php', { method: 'POST', body: formData1 })
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -116,7 +116,7 @@
                         formData2.append('km_final', document.getElementById('kmFinal').value);
                         formData2.append('data_hora_fechamento', document.getElementById('dataHoraFechamento').value);
                         formData2.append('observacao_fechamento', document.getElementById('observacaoFechamento').value);
-                        fetch('api/api_checklist.php', { method: 'POST', body: formData2 })
+                        fetch('../api/api_checklist.php', { method: 'POST', body: formData2 })
                             .then(r => r.json())
                             .then(data => {
                                 if (data.sucesso) {

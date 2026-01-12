@@ -245,7 +245,7 @@
         // Carregar Unidades
         async function carregarUnidades() {
             try {
-                const response = await fetch('api/api_unidades.php');
+                const response = await fetch('../api/api_unidades.php');
                 const data = await response.json();
                 if (data.sucesso) {
                     const select = document.getElementById('filtro_unidade');
@@ -262,7 +262,7 @@
         // Carregar Moradores
         async function carregarMoradores() {
             try {
-                const response = await fetch('api/api_moradores.php');
+                const response = await fetch('../api/api_moradores.php');
                 const data = await response.json();
                 if (data.sucesso) {
                     const select = document.getElementById('filtro_morador');

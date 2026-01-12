@@ -152,7 +152,7 @@
             
             document.getElementById('loadingText').textContent = `Verificando sessão... (${tentativasVerificacao}/${MAX_TENTATIVAS})`;
             
-            fetch('api/api_portal.php?action=verificar_sessao', {
+            fetch('../api/api_portal.php?action=verificar_sessao', {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -258,7 +258,7 @@
             
             console.log('👋 Fazendo logout...');
             
-            fetch('api/api_portal.php?action=logout', {
+            fetch('../api/api_portal.php?action=logout', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,

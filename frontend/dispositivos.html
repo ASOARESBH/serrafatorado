@@ -285,7 +285,7 @@
 
         // Carregar estatísticas
         function carregarEstatisticas() {
-            fetch('api/api_dispositivos.php?action=estatisticas')
+            fetch('../api/api_dispositivos.php?action=estatisticas')
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -302,7 +302,7 @@
         function carregarDispositivos() {
             document.getElementById('loading').classList.add('active');
             
-            fetch('api/api_dispositivos.php?action=listar')
+            fetch('../api/api_dispositivos.php?action=listar')
                 .then(r => r.json())
                 .then(data => {
                     document.getElementById('loading').classList.remove('active');
@@ -386,7 +386,7 @@
             if (editandoId) {
                 // Atualizar
                 dados.id = editandoId;
-                fetch('api/api_dispositivos.php?action=atualizar', {
+                fetch('../api/api_dispositivos.php?action=atualizar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)
@@ -408,7 +408,7 @@
                 });
             } else {
                 // Cadastrar
-                fetch('api/api_dispositivos.php?action=cadastrar', {
+                fetch('../api/api_dispositivos.php?action=cadastrar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)
@@ -465,7 +465,7 @@
         function alterarStatus(id, status) {
             if (!confirm(`Deseja realmente ${status === 'ativo' ? 'ativar' : 'desativar'} este dispositivo?`)) return;
 
-            fetch('api/api_dispositivos.php?action=atualizar_status', {
+            fetch('../api/api_dispositivos.php?action=atualizar_status', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, status })
@@ -486,7 +486,7 @@
         function deletarDispositivo(id) {
             if (!confirm('Deseja realmente deletar este dispositivo? Esta ação não pode ser desfeita!')) return;
 
-            fetch('api/api_dispositivos.php?action=deletar', {
+            fetch('../api/api_dispositivos.php?action=deletar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id })

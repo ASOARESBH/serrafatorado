@@ -271,7 +271,7 @@
         });
 
         function carregarTiposLogs() {
-            fetch('api/api_logs_sistema.php?action=tipos')
+            fetch('../api/api_logs_sistema.php?action=tipos')
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -306,7 +306,7 @@
             if (dataFim) params.append('data_fim', dataFim);
             if (busca) params.append('busca', busca);
             
-            fetch('api/api_logs_sistema.php?' + params.toString())
+            fetch('../api/api_logs_sistema.php?' + params.toString())
                 .then(r => r.json())
                 .then(data => {
                     document.getElementById('loading').classList.remove('active');
@@ -436,7 +436,7 @@
             formData.append('data_inicio', dataInicio);
             formData.append('data_fim', dataFim);
             
-            fetch('api/api_logs_sistema.php?action=estatisticas', {
+            fetch('../api/api_logs_sistema.php?action=estatisticas', {
                 method: 'POST',
                 body: formData
             })
@@ -463,7 +463,7 @@
             if (dataInicio) params.append('data_inicio', dataInicio);
             if (dataFim) params.append('data_fim', dataFim);
             
-            fetch('api/api_logs_sistema.php?' + params.toString())
+            fetch('../api/api_logs_sistema.php?' + params.toString())
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -503,7 +503,7 @@
                 return;
             }
             
-            fetch('api/api_logs_sistema.php?action=limpar', {
+            fetch('../api/api_logs_sistema.php?action=limpar', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ dias: diasInt })

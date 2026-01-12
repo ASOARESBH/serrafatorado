@@ -240,7 +240,7 @@
         function carregarTodosRegistros() {
             document.getElementById('loading').classList.add('active');
             
-            fetch('api/api_registros.php?limite=10000')
+            fetch('../api/api_registros.php?limite=10000')
                 .then(response => response.text())
                 .then(text => {
                     document.getElementById('loading').classList.remove('active');

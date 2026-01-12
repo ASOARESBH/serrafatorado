@@ -204,7 +204,7 @@
         function carregarUnidades() {
             document.getElementById('loading').classList.add('active');
             
-            fetch('api/api_unidades.php')
+            fetch('../api/api_unidades.php')
                 .then(response => response.text())
                 .then(text => {
                     document.getElementById('loading').classList.remove('active');
@@ -270,7 +270,7 @@
                 dados.id = editandoId;
             }
 
-            fetch('api/api_unidades.php', {
+            fetch('../api/api_unidades.php', {
                 method: metodo,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados)
@@ -299,7 +299,7 @@
 
         // Editar unidade
         function editarUnidade(id) {
-            fetch('api/api_unidades.php')
+            fetch('../api/api_unidades.php')
                 .then(response => response.text())
                 .then(text => {
                     try {
@@ -330,7 +330,7 @@
                 return;
             }
 
-            fetch('api/api_unidades.php', {
+            fetch('../api/api_unidades.php', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id })

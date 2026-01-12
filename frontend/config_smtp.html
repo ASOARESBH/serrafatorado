@@ -199,7 +199,7 @@ Senha: [sua senha normal]
 
         // Carregar configurações SMTP
         function carregarConfig() {
-            fetch('api/api_smtp.php?acao=buscar')
+            fetch('../api/api_smtp.php?acao=buscar')
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso && data.dados) {
@@ -223,7 +223,7 @@ Senha: [sua senha normal]
             const formData = new FormData(this);
             formData.append('acao', 'salvar');
             
-            fetch('api/api_smtp.php', {
+            fetch('../api/api_smtp.php', {
                 method: 'POST',
                 body: formData
             })
@@ -246,7 +246,7 @@ Senha: [sua senha normal]
             const email = prompt('Digite um e-mail para teste:');
             if (!email) return;
             
-            fetch('api/api_smtp.php?acao=testar&email=' + encodeURIComponent(email))
+            fetch('../api/api_smtp.php?acao=testar&email=' + encodeURIComponent(email))
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso) {

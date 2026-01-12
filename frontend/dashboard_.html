@@ -586,7 +586,7 @@
 
         // ========== VERIFICAÇÃO DE SESSÃO ==========
         function verificarSessao() {
-            return fetch('api/verificar_sessao.php', {
+            return fetch('../api/verificar_sessao.php', {
                 method: 'GET',
                 credentials: 'include'
             })
@@ -610,7 +610,7 @@
         // ========== LOGOUT ==========
         function logout() {
             if (confirm('Deseja realmente sair do sistema?')) {
-                fetch('api/logout.php', {
+                fetch('../api/logout.php', {
                     method: 'POST',
                     credentials: 'include'
                 })

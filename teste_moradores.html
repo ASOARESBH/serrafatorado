@@ -221,7 +221,7 @@
             mostrarResultado(id, '<div class="loading"></div> Testando...', false);
             
             try {
-                const response = await fetch('api/api_moradores.php', {
+                const response = await fetch('../api/api_moradores.php', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -281,7 +281,7 @@
             mostrarResultado(id, '<div class="loading"></div> Testando...', false);
             
             try {
-                const response = await fetch('api/api_moradores.php?nome=silva', {
+                const response = await fetch('../api/api_moradores.php?nome=silva', {
                     method: 'GET'
                 });
 
@@ -313,7 +313,7 @@
             mostrarResultado(id, '<div class="loading"></div> Testando...', false);
             
             try {
-                const response = await fetch('api/api_unidades.php?ativas=1');
+                const response = await fetch('../api/api_unidades.php?ativas=1');
                 const text = await response.text();
                 
                 let html = `<p><strong>Status HTTP:</strong> ${response.status}</p>`;
@@ -344,15 +344,15 @@
                 <p class="success">✅ Abrindo APIs em novas abas...</p>
                 <p>Verifique se as APIs retornam JSON ou erro 403.</p>
                 <ul>
-                    <li><a href="api/api_moradores.php" target="_blank">api/api_moradores.php</a></li>
-                    <li><a href="api/api_unidades.php?ativas=1" target="_blank">api/api_unidades.php</a></li>
-                    <li><a href="api/debug_erros.php" target="_blank">api/debug_erros.php</a></li>
+                    <li><a href="../api/api_moradores.php" target="_blank">api/api_moradores.php</a></li>
+                    <li><a href="../api/api_unidades.php?ativas=1" target="_blank">api/api_unidades.php</a></li>
+                    <li><a href="../api/debug_erros.php" target="_blank">api/debug_erros.php</a></li>
                 </ul>
             `;
             mostrarResultado(id, html, true);
             
-            window.open('api/api_moradores.php', '_blank');
-            setTimeout(() => window.open('api/api_unidades.php?ativas=1', '_blank'), 500);
+            window.open('../api/api_moradores.php', '_blank');
+            setTimeout(() => window.open('../api/api_unidades.php?ativas=1', '_blank'), 500);
         }
 
         // Teste 5: Verificar Caminhos

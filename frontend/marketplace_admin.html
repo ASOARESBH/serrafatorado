@@ -339,7 +339,7 @@
         
         // Carregar estatísticas
         function carregarEstatisticas() {
-            fetch('api/api_admin_fornecedores.php?acao=estatisticas')
+            fetch('../api/api_admin_fornecedores.php?acao=estatisticas')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -356,7 +356,7 @@
         function carregarFornecedores() {
             document.getElementById('loading').classList.add('active');
             
-            fetch('api/api_admin_fornecedores.php?acao=listar_todos')
+            fetch('../api/api_admin_fornecedores.php?acao=listar_todos')
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('loading').classList.remove('active');
@@ -424,7 +424,7 @@
             formData.append('acao', 'alternar_status');
             formData.append('id', id);
             
-            fetch('api/api_admin_fornecedores.php', {
+            fetch('../api/api_admin_fornecedores.php', {
                 method: 'POST',
                 body: formData
             })
@@ -452,7 +452,7 @@
             formData.append('acao', 'alternar_aprovacao');
             formData.append('id', id);
             
-            fetch('api/api_admin_fornecedores.php', {
+            fetch('../api/api_admin_fornecedores.php', {
                 method: 'POST',
                 body: formData
             })
@@ -552,7 +552,7 @@
         function carregarRamos() {
             document.getElementById('loadingRamos').classList.add('active');
             
-            fetch('api/api_ramos_atividade.php?acao=listar_todos')
+            fetch('../api/api_ramos_atividade.php?acao=listar_todos')
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('loadingRamos').classList.remove('active');
@@ -645,7 +645,7 @@
             const id = document.getElementById('ramoId').value;
             formData.append('acao', id ? 'atualizar' : 'cadastrar');
             
-            fetch('api/api_ramos_atividade.php', {
+            fetch('../api/api_ramos_atividade.php', {
                 method: 'POST',
                 body: formData
             })
@@ -673,7 +673,7 @@
             formData.append('acao', 'alternar_status');
             formData.append('id', id);
             
-            fetch('api/api_ramos_atividade.php', {
+            fetch('../api/api_ramos_atividade.php', {
                 method: 'POST',
                 body: formData
             })

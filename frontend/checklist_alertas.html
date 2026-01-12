@@ -88,7 +88,7 @@
             carregarAlertas();
         });
         function carregarConfiguracoes() {
-            fetch('api/api_checklist_alertas.php?acao=listar_config')
+            fetch('../api/api_checklist_alertas.php?acao=listar_config')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -153,7 +153,7 @@
             formData.append('acao', 'ativar_desativar');
             formData.append('id', id);
             formData.append('ativo', ativo);
-            fetch('api/api_checklist_alertas.php', { method: 'POST', body: formData })
+            fetch('../api/api_checklist_alertas.php', { method: 'POST', body: formData })
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -168,7 +168,7 @@
             formData.append('acao', 'resolver_alerta');
             formData.append('id', id);
             formData.append('observacao', obs);
-            fetch('api/api_checklist_alertas.php', { method: 'POST', body: formData })
+            fetch('../api/api_checklist_alertas.php', { method: 'POST', body: formData })
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -183,7 +183,7 @@
             formData.append('acao', 'ignorar_alerta');
             formData.append('id', id);
             formData.append('observacao', obs);
-            fetch('api/api_checklist_alertas.php', { method: 'POST', body: formData })
+            fetch('../api/api_checklist_alertas.php', { method: 'POST', body: formData })
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {

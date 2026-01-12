@@ -281,7 +281,7 @@
         // Carregar dashboard
         async function carregarDashboard() {
             try {
-                const response = await fetch('api/api_estoque.php?action=dashboard');
+                const response = await fetch('../api/api_estoque.php?action=dashboard');
                 const data = await response.json();
                 if (data.sucesso) {
                     document.getElementById('totalProdutos').textContent = data.dados.total_produtos || 0;
@@ -297,7 +297,7 @@
         // Carregar categorias
         async function carregarCategorias() {
             try {
-                const response = await fetch('api/api_estoque.php?action=categorias');
+                const response = await fetch('../api/api_estoque.php?action=categorias');
                 const data = await response.json();
                 if (data.sucesso) {
                     const selectCadastro = document.getElementById('categoria_id');

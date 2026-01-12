@@ -438,7 +438,7 @@
         // LOGS DE AUDITORIA
         // ========================================
         function carregarTiposLogsAuditoria() {
-            fetch('api/api_logs_sistema.php?action=tipos')
+            fetch('../api/api_logs_sistema.php?action=tipos')
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -473,7 +473,7 @@
             if (dataFim) params.append('data_fim', dataFim);
             if (busca) params.append('busca', busca);
             
-            fetch('api/api_logs_sistema.php?' + params.toString())
+            fetch('../api/api_logs_sistema.php?' + params.toString())
                 .then(r => r.json())
                 .then(data => {
                     document.getElementById('loadingAuditoria').classList.remove('active');
@@ -601,7 +601,7 @@
             if (dataInicio) params.append('data_inicial', dataInicio);
             if (dataFim) params.append('data_final', dataFim);
             
-            fetch('api/api_logs_erro.php?' + params.toString())
+            fetch('../api/api_logs_erro.php?' + params.toString())
                 .then(r => r.json())
                 .then(data => {
                     document.getElementById('loadingErro').classList.remove('active');
@@ -777,7 +777,7 @@
         }
 
         function carregarEstatisticasErro() {
-            fetch('api/api_logs_erro.php?action=estatisticas')
+            fetch('../api/api_logs_erro.php?action=estatisticas')
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso) {

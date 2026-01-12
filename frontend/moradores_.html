@@ -339,7 +339,7 @@
 
         // Carregar unidades do banco
         function carregarUnidades() {
-            fetch('api/api_unidades.php?ativas=1')
+            fetch('../api/api_unidades.php?ativas=1')
                 .then(response => response.text())
                 .then(text => {
                     try {
@@ -366,7 +366,7 @@
 
         // Carregar unidades para o filtro
         function carregarUnidadesFiltro() {
-            fetch('api/api_unidades.php?ativas=1')
+            fetch('../api/api_unidades.php?ativas=1')
                 .then(response => response.text())
                 .then(text => {
                     try {
@@ -439,7 +439,7 @@
         function carregarMoradores() {
             document.getElementById('loading').classList.add('active');
             
-            fetch('api/api_moradores.php')
+            fetch('../api/api_moradores.php')
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('loading').classList.remove('active');
@@ -625,7 +625,7 @@
                 }
             }
 
-            fetch('api/api_moradores.php', {
+            fetch('../api/api_moradores.php', {
                 method: metodo,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados)
@@ -659,7 +659,7 @@
 
         // Editar morador
         function editarMorador(id) {
-            fetch('api/api_moradores.php')
+            fetch('../api/api_moradores.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -694,7 +694,7 @@
                 return;
             }
 
-            fetch('api/api_moradores.php', {
+            fetch('../api/api_moradores.php', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id })

@@ -116,7 +116,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
         
         function logout() {
             if (confirm('Deseja sair?')) {
-                fetch('api/api_login_fornecedor.php', { method: 'POST', body: new FormData().append('acao', 'logout') });
+                fetch('../api/api_login_fornecedor.php', { method: 'POST', body: new FormData().append('acao', 'logout') });
                 window.location.href = 'login_fornecedor.html';
             }
         }

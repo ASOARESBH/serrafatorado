@@ -95,7 +95,7 @@
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner"></span> Enviando...';
             
-            fetch('api/api_recuperacao_senha.php?acao=solicitar&cpf=' + encodeURIComponent(cpf))
+            fetch('../api/api_recuperacao_senha.php?acao=solicitar&cpf=' + encodeURIComponent(cpf))
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso) {

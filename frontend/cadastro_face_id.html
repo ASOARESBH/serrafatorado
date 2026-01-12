@@ -627,7 +627,7 @@
             const descritorArray = Array.from(faceDescriptor);
             
             try {
-                const response = await fetch('api/api_face_id.php?action=cadastrar_descritor', {
+                const response = await fetch('../api/api_face_id.php?action=cadastrar_descritor', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

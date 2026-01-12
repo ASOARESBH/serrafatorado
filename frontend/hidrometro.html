@@ -333,7 +333,7 @@
         // Carregar Unidades
         async function carregarUnidades() {
             try {
-                const response = await fetch('api/api_unidades.php?ativas=1');
+                const response = await fetch('../api/api_unidades.php?ativas=1');
                 const data = await response.json();
                 if (data.sucesso) {
                     // Ordenar unidades numericamente (menor para maior)
@@ -419,7 +419,7 @@
         async function carregarHidrometros() {
             document.getElementById('loading').classList.add('active');
             try {
-                const response = await fetch('api/api_hidrometros.php');
+                const response = await fetch('../api/api_hidrometros.php');
                 const data = await response.json();
                 
                 if (data.sucesso) {
@@ -519,7 +519,7 @@
             };
             
             try {
-                const response = await fetch('api/api_hidrometros.php', {
+                const response = await fetch('../api/api_hidrometros.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)
@@ -579,7 +579,7 @@
             }
             
             try {
-                const response = await fetch('api/api_hidrometros.php', {
+                const response = await fetch('../api/api_hidrometros.php', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)

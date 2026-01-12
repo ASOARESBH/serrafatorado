@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function carregarTodos() {
-    fetch('api/api_protocolos.php')
+    fetch('../api/api_protocolos.php')
         .then(r => r.json())
         .then(data => {
             if (data.sucesso) {

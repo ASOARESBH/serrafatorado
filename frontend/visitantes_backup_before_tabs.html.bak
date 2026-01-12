@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Visitantes - Sistema de Controle de Acesso</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; display: flex; }
+        .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: linear-gradient(135deg, #1e293b 0%, #334155 100%); padding: 2rem 0; overflow-y: auto; }
+        .sidebar h1 { color: #fff; font-size: 1.3rem; text-align: center; margin-bottom: 2rem; }
+        .nav-menu { list-style: none; padding: 1rem; }
+        .nav-item { margin-bottom: 0.5rem; }
+        .nav-link { display: flex; align-items: center; padding: 0.75rem 1rem; color: #cbd5e1; text-decoration: none; border-radius: 8px; transition: all 0.2s; }
+        .nav-link:hover, .nav-link.active { background: rgba(255, 255, 255, 0.1); color: #fff; }
+        .nav-link i { margin-right: 0.75rem; width: 20px; }
+        .main-content { margin-left: 260px; padding: 2rem; width: 100%; }
+        .header { background: #fff; padding: 1.5rem 2rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
+        .form-section, .table-section { background: #fff; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+        .form-grid-2 { grid-template-columns: 2fr 1fr; }
+        .form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
+        input, select, textarea { width: 100%; padding: 0.6rem; margin-bottom: 0.5rem; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+        button { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff; padding: 0.6rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; margin-right: 0.5rem; }
+        button:hover { opacity: 0.9; transform: scale(1.02); }
+        .btn-cancel { background: linear-gradient(135deg, #6b7280, #4b5563); }
+        .btn-edit { background: linear-gradient(135deg, #f59e0b, #d97706); padding: 0.4rem 0.8rem; font-size: 0.9rem; }
+        .btn-delete { background: linear-gradient(135deg, #ef4444, #dc2626); padding: 0.4rem 0.8rem; font-size: 0.9rem; }
+        .btn-buscar-cep { background: linear-gradient(135deg, #22c55e, #16a34a); padding: 0.5rem 1rem; margin-top: 1.7rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.75rem; border-bottom: 1px solid #f1f5f9; text-align: left; font-size: 0.9rem; }
+        th { background: #f8fafc; font-weight: 600; }
+        .alert { padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-weight: 500; }
+        .alert-success { background: #dcfce7; color: #166534; border: 1px solid #22c55e; }
+        .alert-error { background: #fee2e2; color: #b91c1c; border: 1px solid #f87171; }
+        .loading { display: none; text-align: center; padding: 2rem; }
+        .loading.active { display: block; }
+        .search-box { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .search-box input { flex: 1; }
+        .info-box { background: #eff6ff; border: 1px solid #3b82f6; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; }
+        .info-box strong { color: #1d4ed8; }
+        .cep-loading { display: none; color: #3b82f6; font-size: 0.85rem; margin-top: 0.25rem; }
+        .cep-loading.active { display: block; }
+        /* Menu Toggle Mobile */
+        .menu-toggle { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 1001; background: #1e293b; color: #fff; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .menu-toggle { display: block; }
+            .main-content { margin-left: 0; padding: 1rem; }
+            .header { padding: 1rem; }
+            .form-section, .table-section { padding: 1rem; }
+            th, td { padding: 0.5rem; font-size: 0.85rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .form-grid { grid-template-columns: 1fr; }
+            button { width: 100%; margin-bottom: 0.5rem; margin-right: 0; }
+        }
+    </style>
+    <script src="js/sessao_manager.js"></script>
+</head>
+<body>
+    <button class="menu-toggle" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </button>
+    <nav class="sidebar" id="sidebar">
+        <h1>Serra da Liberdade</h1>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="dashboard.html" class="nav-link active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+            <li class="nav-item"><a href="moradores.html" class="nav-link"><i class="fas fa-users"></i> Moradores</a></li>
+            <li class="nav-item"><a href="veiculos.html" class="nav-link"><i class="fas fa-car"></i> Veículos</a></li>
+            <li class="nav-item"><a href="visitantes.html" class="nav-link"><i class="fas fa-user-friends"></i> Visitantes</a></li>
+            <li class="nav-item"><a href="registro.html" class="nav-link"><i class="fas fa-clipboard-list"></i> Registro Manual</a></li>
+            <li class="nav-item"><a href="acesso.html" class="nav-link"><i class="fas fa-door-open"></i> Controle de Acesso</a></li>
+            <li class="nav-item"><a href="relatorios.html" class="nav-link"><i class="fas fa-file-alt"></i> Relatórios</a></li>
+                <li class="nav-item"><a href="configuracao.html" class="nav-link"><i class="fas fa-cog"></i> Configurações</a></li>
+            <li class="nav-item"><a href="manutencao.html" class="nav-link"><i class="fas fa-tools"></i> Manutenção</a></li>
+                <li class="nav-item"><a href="administrativa.html" class="nav-link"><i class="fas fa-briefcase"></i> Administrativo</a></li>
+            
+    </nav>
+
+    <main class="main-content">
+        <header class="header">
+            <h1><i class="fas fa-user-friends"></i> Cadastro de Visitantes</h1>
+        </header>
+
+        <div id="alertBox"></div>
+
+        <section class="form-section">
+            <h2 id="formTitle">Novo Visitante</h2>
+            
+            <form id="visitanteForm">
+                <input type="hidden" id="visitanteId">
+                
+                <div class="form-grid">
+                    <div style="grid-column: 1 / -1;">
+                        <label>Nome Completo *</label>
+                        <input type="text" id="nomeCompleto" required placeholder="Nome completo do visitante">
+                    </div>
+                </div>
+
+                <div class="form-grid form-grid-3">
+                    <div>
+                        <label>Tipo de Documento *</label>
+                        <select id="tipoDocumento" required>
+                            <option value="CPF">CPF</option>
+                            <option value="RG">RG</option>
+                        </select>
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label>Número do Documento *</label>
+                        <input type="text" id="documento" required placeholder="000.000.000-00">
+                    </div>
+                </div>
+
+                <div class="form-grid form-grid-3">
+                    <div>
+                        <label>CEP</label>
+                        <input type="text" id="cep" maxlength="10" placeholder="00000-000">
+                        <div class="cep-loading" id="cepLoading">
+                            <i class="fas fa-spinner fa-spin"></i> Buscando CEP...
+                        </div>
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label>Endereço</label>
+                        <input type="text" id="endereco" placeholder="Rua, Avenida, etc.">
+                    </div>
+                </div>
+
+                <div class="form-grid form-grid-3">
+                    <div>
+                        <label>Número</label>
+                        <input type="text" id="numero" placeholder="Nº">
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label>Complemento</label>
+                        <input type="text" id="complemento" placeholder="Apto, Bloco, etc.">
+                    </div>
+                </div>
+
+                <div class="form-grid form-grid-3">
+                    <div>
+                        <label>Bairro</label>
+                        <input type="text" id="bairro" placeholder="Bairro">
+                    </div>
+                    <div>
+                        <label>Cidade</label>
+                        <input type="text" id="cidade" placeholder="Cidade">
+                    </div>
+                    <div>
+                        <label>Estado</label>
+                        <select id="estado">
+                            <option value="">UF</option>
+                            <option value="AC">AC</option>
+                            <option value="AL">AL</option>
+                            <option value="AP">AP</option>
+                            <option value="AM">AM</option>
+                            <option value="BA">BA</option>
+                            <option value="CE">CE</option>
+                            <option value="DF">DF</option>
+                            <option value="ES">ES</option>
+                            <option value="GO">GO</option>
+                            <option value="MA">MA</option>
+                            <option value="MT">MT</option>
+                            <option value="MS">MS</option>
+                            <option value="MG">MG</option>
+                            <option value="PA">PA</option>
+                            <option value="PB">PB</option>
+                            <option value="PR">PR</option>
+                            <option value="PE">PE</option>
+                            <option value="PI">PI</option>
+                            <option value="RJ">RJ</option>
+                            <option value="RN">RN</option>
+                            <option value="RS">RS</option>
+                            <option value="RO">RO</option>
+                            <option value="RR">RR</option>
+                            <option value="SC">SC</option>
+                            <option value="SP">SP</option>
+                            <option value="SE">SE</option>
+                            <option value="TO">TO</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid form-grid-3">
+                    <div>
+                        <label>Telefone</label>
+                        <input type="text" id="telefone" placeholder="(00) 0000-0000">
+                    </div>
+                    <div>
+                        <label>Celular</label>
+                        <input type="text" id="celular" placeholder="(00) 00000-0000">
+                    </div>
+                    <div>
+                        <label>E-mail</label>
+                        <input type="email" id="email" placeholder="email@exemplo.com">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div style="grid-column: 1 / -1;">
+                        <label>Observação</label>
+                        <textarea id="observacao" rows="3" placeholder="Observações adicionais"></textarea>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" id="btnSalvar">Salvar Visitante</button>
+                    <button type="button" class="btn-cancel" onclick="cancelarEdicao()">Cancelar</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="table-section">
+            <h2>Lista de Visitantes</h2>
+            
+            <div class="search-box">
+                <input type="text" id="campoBusca" placeholder="Buscar por nome ou documento...">
+                <button onclick="buscarVisitantes()"><i class="fas fa-search"></i> Buscar</button>
+                <button class="btn-cancel" onclick="limparBusca()"><i class="fas fa-eraser"></i> Limpar</button>
+            </div>
+
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <p>Carregando...</p>
+            </div>
+
+            <table id="visitantesTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Documento</th>
+                        <th>Telefone</th>
+                        <th>Celular</th>
+                        <th>Cidade/UF</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        let editandoId = null;
+
+        // Carregar ao iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarVisitantes();
+            aplicarMascaras();
+            configurarBuscaCEP();
+        });
+
+        // Aplicar máscaras
+        function aplicarMascaras() {
+            // Máscara de CEP
+            document.getElementById('cep').addEventListener('input', function(e) {
+                let valor = e.target.value.replace(/\D/g, '');
+                if (valor.length <= 8) {
+                    valor = valor.replace(/^(\d{5})(\d)/, '$1-$2');
+                }
+                e.target.value = valor;
+            });
+
+            // Máscara de CPF/RG
+            document.getElementById('tipoDocumento').addEventListener('change', function() {
+                document.getElementById('documento').value = '';
+            });
+
+            document.getElementById('documento').addEventListener('input', function(e) {
+                const tipo = document.getElementById('tipoDocumento').value;
+                let valor = e.target.value.replace(/\D/g, '');
+                
+                if (tipo === 'CPF') {
+                    if (valor.length <= 11) {
+                        valor = valor.replace(/^(\d{3})(\d)/, '$1.$2');
+                        valor = valor.replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
+                        valor = valor.replace(/\.(\d{3})(\d)/, '.$1-$2');
+                    }
+                } else {
+                    if (valor.length <= 9) {
+                        valor = valor.replace(/^(\d{2})(\d)/, '$1.$2');
+                        valor = valor.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+                        valor = valor.replace(/\.(\d{3})(\d)/, '.$1-$2');
+                    }
+                }
+                e.target.value = valor;
+            });
+
+            // Máscara de telefone
+            document.getElementById('telefone').addEventListener('input', function(e) {
+                let valor = e.target.value.replace(/\D/g, '');
+                if (valor.length <= 10) {
+                    valor = valor.replace(/^(\d{2})(\d)/g, '($1) $2');
+                    valor = valor.replace(/(\d)(\d{4})$/, '$1-$2');
+                }
+                e.target.value = valor;
+            });
+
+            // Máscara de celular
+            document.getElementById('celular').addEventListener('input', function(e) {
+                let valor = e.target.value.replace(/\D/g, '');
+                if (valor.length <= 11) {
+                    valor = valor.replace(/^(\d{2})(\d)/g, '($1) $2');
+                    valor = valor.replace(/(\d)(\d{4})$/, '$1-$2');
+                }
+                e.target.value = valor;
+            });
+        }
+
+        // Configurar busca de CEP
+        function configurarBuscaCEP() {
+            document.getElementById('cep').addEventListener('blur', function() {
+                const cep = this.value.replace(/\D/g, '');
+                
+                if (cep.length === 8) {
+                    buscarCEP(cep);
+                }
+            });
+        }
+
+        // Buscar CEP nos Correios
+        function buscarCEP(cep) {
+            const loading = document.getElementById('cepLoading');
+            loading.classList.add('active');
+            
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    loading.classList.remove('active');
+                    
+                    if (data.erro) {
+                        mostrarAlerta('error', 'CEP não encontrado. Preencha o endereço manualmente.');
+                        return;
+                    }
+                    
+                    // Preencher campos
+                    document.getElementById('endereco').value = data.logradouro || '';
+                    document.getElementById('bairro').value = data.bairro || '';
+                    document.getElementById('cidade').value = data.localidade || '';
+                    document.getElementById('estado').value = data.uf || '';
+                    
+                    // Focar no campo número
+                    document.getElementById('numero').focus();
+                    
+                    mostrarAlerta('success', 'CEP encontrado! Endereço preenchido automaticamente.');
+                })
+                .catch(error => {
+                    loading.classList.remove('active');
+                    mostrarAlerta('error', 'Erro ao buscar CEP. Preencha o endereço manualmente.');
+                    console.error('Erro ao buscar CEP:', error);
+                });
+        }
+
+        // Carregar visitantes
+        function carregarVisitantes() {
+            document.getElementById('loading').classList.add('active');
+            
+            fetch('api/api_visitantes.php')
+                .then(response => response.text())
+                .then(text => {
+                    document.getElementById('loading').classList.remove('active');
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.sucesso) {
+                            renderizarTabela(data.dados);
+                        } else {
+                            mostrarAlerta('error', data.mensagem);
+                        }
+                    } catch (e) {
+                        console.error('Erro ao processar visitantes:', text);
+                        mostrarAlerta('error', 'Erro ao carregar visitantes');
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('loading').classList.remove('active');
+                    mostrarAlerta('error', 'Erro ao carregar visitantes: ' + error.message);
+                });
+        }
+
+        // Buscar visitantes
+        function buscarVisitantes() {
+            const busca = document.getElementById('campoBusca').value;
+            document.getElementById('loading').classList.add('active');
+            
+            fetch(`api/api_visitantes.php?busca=${encodeURIComponent(busca)}`)
+                .then(response => response.text())
+                .then(text => {
+                    document.getElementById('loading').classList.remove('active');
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.sucesso) {
+                            renderizarTabela(data.dados);
+                        } else {
+                            mostrarAlerta('error', data.mensagem);
+                        }
+                    } catch (e) {
+                        console.error('Erro ao processar busca:', text);
+                        mostrarAlerta('error', 'Erro ao buscar visitantes');
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('loading').classList.remove('active');
+                    mostrarAlerta('error', 'Erro ao buscar: ' + error.message);
+                });
+        }
+
+        // Limpar busca
+        function limparBusca() {
+            document.getElementById('campoBusca').value = '';
+            carregarVisitantes();
+        }
+
+        // Renderizar tabela
+        function renderizarTabela(visitantes) {
+            const tbody = document.querySelector('#visitantesTable tbody');
+            tbody.innerHTML = '';
+
+            if (visitantes.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Nenhum visitante cadastrado</td></tr>';
+                return;
+            }
+
+            visitantes.forEach(v => {
+                const tr = document.createElement('tr');
+                const cidadeUF = v.cidade && v.estado ? `${v.cidade}/${v.estado}` : (v.cidade || v.estado || '-');
+                
+                tr.innerHTML = `
+                    <td>${v.id}</td>
+                    <td><strong>${v.nome_completo}</strong></td>
+                    <td>${v.tipo_documento}: ${v.documento}</td>
+                    <td>${v.telefone || '-'}</td>
+                    <td>${v.celular || '-'}</td>
+                    <td>${cidadeUF}</td>
+                    <td>
+                        <button class="btn-edit" onclick="editarVisitante(${v.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-delete" onclick="excluirVisitante(${v.id}, '${v.nome_completo}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Salvar visitante
+        document.getElementById('visitanteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const dados = {
+                nome_completo: document.getElementById('nomeCompleto').value,
+                documento: document.getElementById('documento').value.replace(/\D/g, ''),
+                tipo_documento: document.getElementById('tipoDocumento').value,
+                cep: document.getElementById('cep').value.replace(/\D/g, ''),
+                endereco: document.getElementById('endereco').value,
+                numero: document.getElementById('numero').value,
+                complemento: document.getElementById('complemento').value,
+                bairro: document.getElementById('bairro').value,
+                cidade: document.getElementById('cidade').value,
+                estado: document.getElementById('estado').value,
+                telefone: document.getElementById('telefone').value,
+                celular: document.getElementById('celular').value,
+                email: document.getElementById('email').value,
+                observacao: document.getElementById('observacao').value
+            };
+
+            const metodo = editandoId ? 'PUT' : 'POST';
+            if (editandoId) {
+                dados.id = editandoId;
+            }
+
+            fetch('api/api_visitantes.php', {
+                method: metodo,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            })
+            .then(response => response.text())
+            .then(text => {
+                try {
+                    const data = JSON.parse(text);
+                    if (data.sucesso) {
+                        mostrarAlerta('success', data.mensagem);
+                        limparFormulario();
+                        carregarVisitantes();
+                    } else {
+                        mostrarAlerta('error', data.mensagem);
+                    }
+                } catch (e) {
+                    console.error('Resposta do servidor:', text);
+                    mostrarAlerta('error', 'Erro ao processar resposta. Verifique se o cadastro foi realizado.');
+                    carregarVisitantes();
+                }
+            })
+            .catch(error => {
+                mostrarAlerta('error', 'Erro ao salvar: ' + error.message);
+            });
+        });
+
+        // Editar visitante
+        function editarVisitante(id) {
+            fetch('api/api_visitantes.php')
+                .then(response => response.text())
+                .then(text => {
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.sucesso) {
+                            const visitante = data.dados.find(v => v.id == id);
+                            if (visitante) {
+                                editandoId = id;
+                                document.getElementById('formTitle').textContent = 'Editar Visitante';
+                                document.getElementById('visitanteId').value = visitante.id;
+                                document.getElementById('nomeCompleto').value = visitante.nome_completo;
+                                document.getElementById('tipoDocumento').value = visitante.tipo_documento;
+                                document.getElementById('documento').value = visitante.documento;
+                                document.getElementById('cep').value = visitante.cep || '';
+                                document.getElementById('endereco').value = visitante.endereco || '';
+                                document.getElementById('numero').value = visitante.numero || '';
+                                document.getElementById('complemento').value = visitante.complemento || '';
+                                document.getElementById('bairro').value = visitante.bairro || '';
+                                document.getElementById('cidade').value = visitante.cidade || '';
+                                document.getElementById('estado').value = visitante.estado || '';
+                                document.getElementById('telefone').value = visitante.telefone || '';
+                                document.getElementById('celular').value = visitante.celular || '';
+                                document.getElementById('email').value = visitante.email || '';
+                                document.getElementById('observacao').value = visitante.observacao || '';
+                                
+                                document.getElementById('btnSalvar').textContent = 'Atualizar Visitante';
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Erro ao carregar visitante:', e);
+                    }
+                });
+        }
+
+        // Excluir visitante
+        function excluirVisitante(id, nome) {
+            if (!confirm(`Deseja realmente excluir o visitante "${nome}"?`)) {
+                return;
+            }
+
+            fetch('api/api_visitantes.php', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            })
+            .then(response => response.text())
+            .then(text => {
+                try {
+                    const data = JSON.parse(text);
+                    if (data.sucesso) {
+                        mostrarAlerta('success', data.mensagem);
+                        carregarVisitantes();
+                    } else {
+                        mostrarAlerta('error', data.mensagem);
+                    }
+                } catch (e) {
+                    console.error('Erro ao excluir:', text);
+                    mostrarAlerta('error', 'Erro ao excluir visitante');
+                }
+            })
+            .catch(error => {
+                mostrarAlerta('error', 'Erro ao excluir: ' + error.message);
+            });
+        }
+
+        // Cancelar edição
+        function cancelarEdicao() {
+            limparFormulario();
+        }
+
+        // Limpar formulário
+        function limparFormulario() {
+            document.getElementById('visitanteForm').reset();
+            editandoId = null;
+            document.getElementById('formTitle').textContent = 'Novo Visitante';
+            document.getElementById('btnSalvar').textContent = 'Salvar Visitante';
+            document.getElementById('visitanteId').value = '';
+        }
+
+        // Mostrar alerta
+        function mostrarAlerta(tipo, mensagem) {
+            const alertBox = document.getElementById('alertBox');
+            const classe = tipo === 'success' ? 'alert-success' : 'alert-error';
+            const icone = tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            
+            alertBox.innerHTML = `<div class="alert ${classe}"><i class="fas ${icone}"></i> ${mensagem}</div>`;
+            
+            setTimeout(() => {
+                alertBox.innerHTML = '';
+            }, 5000);
+        }
+        // Toggle menu mobile
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Fechar menu ao clicar fora (mobile)
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.menu-toggle');
+            
+            if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+    </script>
+    <!-- Proteção de Login -->
+    <script src="js/auth-guard.js"></script>
+    <script src="js/user-display.js"></script>
+</body>
+</html>
+

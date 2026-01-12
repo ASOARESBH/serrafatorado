@@ -478,7 +478,7 @@
             
             document.getElementById('loadingText').textContent = `Verificando sessão... (${tentativasVerificacao}/${MAX_TENTATIVAS})`;
             
-            fetch('api/api_portal.php?action=verificar_sessao', {
+            fetch('../api/api_portal.php?action=verificar_sessao', {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -585,7 +585,7 @@
         // ========================================
         
         function carregarPerfil() {
-            fetch('api/api_portal_morador.php?action=perfil', {
+            fetch('../api/api_portal_morador.php?action=perfil', {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             .then(response => response.json())
@@ -614,7 +614,7 @@
             const telefone = document.getElementById('telefone').value;
             const celular = document.getElementById('celular').value;
             
-            fetch('api/api_portal_morador.php?action=perfil', {
+            fetch('../api/api_portal_morador.php?action=perfil', {
                 method: 'PUT',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -653,7 +653,7 @@
                 return;
             }
             
-            fetch('api/api_portal_morador.php?action=perfil', {
+            fetch('../api/api_portal_morador.php?action=perfil', {
                 method: 'PUT',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -682,7 +682,7 @@
         
         function carregarVisitantes() {
             // Carregar lista de visitantes
-            fetch('api/api_portal_morador.php?action=visitantes', {
+            fetch('../api/api_portal_morador.php?action=visitantes', {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             .then(response => response.json())
@@ -747,7 +747,7 @@
                 observacao: document.getElementById('visitanteObs').value
             };
             
-            fetch('api/api_portal_morador.php?action=visitantes', {
+            fetch('../api/api_portal_morador.php?action=visitantes', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -872,7 +872,7 @@
                 unidade_destino: unidade
             };
             
-            fetch('api/api_acessos_visitantes.php', {
+            fetch('../api/api_acessos_visitantes.php', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -987,7 +987,7 @@
         let dadosHidrometro = null;
         
         function carregarHidrometro() {
-            fetch('api/api_morador_hidrometro.php', {
+            fetch('../api/api_morador_hidrometro.php', {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             .then(response => response.json())

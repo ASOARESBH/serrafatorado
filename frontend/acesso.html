@@ -165,7 +165,7 @@
 
         // Verificar status do RFID
         function verificarStatusRFID() {
-            fetch('api/api_rfid.php?acao=testar_conexao')
+            fetch('../api/api_rfid.php?acao=testar_conexao')
                 .then(response => response.json())
                 .then(data => {
                     const statusDiv = document.getElementById('rfidStatus');
@@ -203,7 +203,7 @@
             infoDiv.innerHTML = '';
 
             // Verificar TAG via API
-            fetch('api/api_rfid.php?acao=verificar_tag', {
+            fetch('../api/api_rfid.php?acao=verificar_tag', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ tag: entrada })
@@ -263,7 +263,7 @@
 
         // Carregar últimos acessos
         function carregarUltimosAcessos() {
-            fetch('api/api_rfid.php?acao=ultimos_acessos&limite=20')
+            fetch('../api/api_rfid.php?acao=ultimos_acessos&limite=20')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {

@@ -209,7 +209,7 @@
 
         // Carregar veículos do banco
         function carregarVeiculos() {
-            fetch('api/api_veiculos.php')
+            fetch('../api/api_veiculos.php')
                 .then(response => response.text())
                 .then(text => {
                     try {
@@ -282,7 +282,7 @@
         function carregarRegistros() {
             document.getElementById('loading').classList.add('active');
             
-            fetch('api/api_registros.php?limite=50')
+            fetch('../api/api_registros.php?limite=50')
                 .then(response => response.text())
                 .then(text => {
                     document.getElementById('loading').classList.remove('active');
@@ -353,7 +353,7 @@
                 morador_id: document.getElementById('moradorId').value
             };
 
-            fetch('api/api_registros.php', {
+            fetch('../api/api_registros.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados)
@@ -386,7 +386,7 @@
                 return;
             }
 
-            fetch('api/api_registros.php', {
+            fetch('../api/api_registros.php', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id })

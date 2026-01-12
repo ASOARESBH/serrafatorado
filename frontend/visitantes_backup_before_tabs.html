@@ -363,7 +363,7 @@
         function carregarVisitantes() {
             document.getElementById('loading').classList.add('active');
             
-            fetch('api/api_visitantes.php')
+            fetch('../api/api_visitantes.php')
                 .then(response => response.text())
                 .then(text => {
                     document.getElementById('loading').classList.remove('active');
@@ -474,7 +474,7 @@
                 dados.id = editandoId;
             }
 
-            fetch('api/api_visitantes.php', {
+            fetch('../api/api_visitantes.php', {
                 method: metodo,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados)
@@ -503,7 +503,7 @@
 
         // Editar visitante
         function editarVisitante(id) {
-            fetch('api/api_visitantes.php')
+            fetch('../api/api_visitantes.php')
                 .then(response => response.text())
                 .then(text => {
                     try {
@@ -545,7 +545,7 @@
                 return;
             }
 
-            fetch('api/api_visitantes.php', {
+            fetch('../api/api_visitantes.php', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id })

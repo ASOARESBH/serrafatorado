@@ -297,7 +297,7 @@
         
         async function carregarPlanos() {
             try {
-                const res = await fetch('api/api_planos_contas.php?acao=listar');
+                const res = await fetch('../api/api_planos_contas.php?acao=listar');
                 const data = await res.json();
                 if (data.sucesso && data.dados) {
                     const select = document.getElementById('selectPlano');
@@ -316,7 +316,7 @@
         
         async function carregarContas() {
             try {
-                const res = await fetch('api/api_contas_pagar.php?acao=listar');
+                const res = await fetch('../api/api_contas_pagar.php?acao=listar');
                 const data = await res.json();
                 if (data.sucesso && data.dados) {
                     const tbody = document.getElementById('corpoTabela');
@@ -347,7 +347,7 @@
             const formData = new FormData(e.target);
             formData.append('acao', 'cadastrar');
             try {
-                const res = await fetch('api/api_contas_pagar.php', { method: 'POST', body: formData });
+                const res = await fetch('../api/api_contas_pagar.php', { method: 'POST', body: formData });
                 const data = await res.json();
                 if (data.sucesso) {
                     mostrarAlerta(data.mensagem, 'success');
@@ -375,7 +375,7 @@
             const formData = new FormData(e.target);
             formData.append('acao', 'pagar');
             try {
-                const res = await fetch('api/api_contas_pagar.php', { method: 'POST', body: formData });
+                const res = await fetch('../api/api_contas_pagar.php', { method: 'POST', body: formData });
                 const data = await res.json();
                 if (data.sucesso) {
                     mostrarAlerta(data.mensagem, 'success');

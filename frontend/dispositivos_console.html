@@ -418,7 +418,7 @@
         // CARREGAR TIPOS
         // =====================================================
         function carregarTipos() {
-            fetch('api/api_dispositivos_seguranca.php?acao=listar_tipos')
+            fetch('../api/api_dispositivos_seguranca.php?acao=listar_tipos')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -440,7 +440,7 @@
         // CARREGAR MARCAS
         // =====================================================
         function carregarMarcas() {
-            fetch('api/api_dispositivos_seguranca.php?acao=listar_marcas')
+            fetch('../api/api_dispositivos_seguranca.php?acao=listar_marcas')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -464,7 +464,7 @@
         function carregarDispositivos() {
             document.getElementById('loading').classList.add('active');
             
-            fetch('api/api_dispositivos_seguranca.php?acao=listar')
+            fetch('../api/api_dispositivos_seguranca.php?acao=listar')
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('loading').classList.remove('active');
@@ -487,7 +487,7 @@
         // CARREGAR ESTATÍSTICAS
         // =====================================================
         function carregarEstatisticas() {
-            fetch('api/api_dispositivos_seguranca.php?acao=estatisticas')
+            fetch('../api/api_dispositivos_seguranca.php?acao=estatisticas')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -611,7 +611,7 @@
             formData.append('data_instalacao', document.getElementById('dispositivoDataInstalacao').value);
             formData.append('observacoes', document.getElementById('dispositivoObservacoes').value);
             
-            fetch('api/api_dispositivos_seguranca.php', {
+            fetch('../api/api_dispositivos_seguranca.php', {
                 method: 'POST',
                 body: formData
             })
@@ -642,7 +642,7 @@
             formData.append('acao', 'alternar_status');
             formData.append('id', id);
             
-            fetch('api/api_dispositivos_seguranca.php', {
+            fetch('../api/api_dispositivos_seguranca.php', {
                 method: 'POST',
                 body: formData
             })
@@ -672,7 +672,7 @@
             formData.append('acao', 'excluir');
             formData.append('id', id);
             
-            fetch('api/api_dispositivos_seguranca.php', {
+            fetch('../api/api_dispositivos_seguranca.php', {
                 method: 'POST',
                 body: formData
             })

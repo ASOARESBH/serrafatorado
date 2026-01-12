@@ -875,7 +875,7 @@
             loading.classList.add('active');
             loading.textContent = '⏳ Validando...';
 
-            fetch('api/api_console_acesso.php?action=validar_qrcode', {
+            fetch('../api/api_console_acesso.php?action=validar_qrcode', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1136,7 +1136,7 @@
         // Validar face com banco
         async function validarFaceComBanco(descriptor) {
             try {
-                const response = await fetch('api/api_face_id.php?action=validar_face', {
+                const response = await fetch('../api/api_face_id.php?action=validar_face', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

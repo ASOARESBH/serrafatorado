@@ -239,7 +239,7 @@
         function carregarNotificacoes() {
             document.getElementById('loading').classList.add('active');
             
-            fetch('api/api_notificacoes.php')
+            fetch('../api/api_notificacoes.php')
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('loading').classList.remove('active');
@@ -305,7 +305,7 @@
                 formData.append('anexo', anexo);
             }
             
-            fetch('api/api_notificacoes.php', {
+            fetch('../api/api_notificacoes.php', {
                 method: 'POST',
                 body: formData
             })
@@ -372,7 +372,7 @@
                 return;
             }
             
-            fetch('api/api_notificacoes.php', {
+            fetch('../api/api_notificacoes.php', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id })

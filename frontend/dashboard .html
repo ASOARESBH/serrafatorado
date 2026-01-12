@@ -131,7 +131,7 @@
 
         function carregarEstatisticas() {
             // Carregar moradores
-            fetch('api/api_moradores.php')
+            fetch('../api/api_moradores.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -140,7 +140,7 @@
                 });
 
             // Carregar veículos
-            fetch('api/api_veiculos.php')
+            fetch('../api/api_veiculos.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -151,7 +151,7 @@
                 });
 
             // Carregar registros
-            fetch('api/api_registros.php?limite=1000')
+            fetch('../api/api_registros.php?limite=1000')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -183,7 +183,7 @@
     <!-- Gráficos de Acessos -->
     <script>
         // Carregar dados dos gráficos
-        fetch('api/api_dashboard_acessos.php')
+        fetch('../api/api_dashboard_acessos.php')
             .then(response => response.json())
             .then(data => {
                 console.log('Dados recebidos:', data);

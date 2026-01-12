@@ -359,7 +359,7 @@
         // Carregar Unidades
         async function carregarUnidades() {
             try {
-                const response = await fetch('api/api_unidades.php?ativas=1');
+                const response = await fetch('../api/api_unidades.php?ativas=1');
                 const data = await response.json();
                 if (data.sucesso) {
                     const select = document.getElementById('ind_unidade');
@@ -426,7 +426,7 @@
             }
             
             try {
-                const response = await fetch('api/api_hidrometros.php?ativos=1');
+                const response = await fetch('../api/api_hidrometros.php?ativos=1');
                 const data = await response.json();
                 
                 selectHidrometro.innerHTML = '<option value="">Selecione um hidrômetro...</option>';
@@ -467,7 +467,7 @@
                     document.getElementById('ind_leitura_anterior').value = leituraAnterior;
                     
                     // Buscar info do hidrômetro
-                    const respH = await fetch('api/api_hidrometros.php');
+                    const respH = await fetch('../api/api_hidrometros.php');
                     const dataH = await respH.json();
                     const hidrometro = dataH.dados.find(h => h.id == hidrometroId);
                     
@@ -527,7 +527,7 @@
             };
             
             try {
-                const response = await fetch('api/api_leituras.php', {
+                const response = await fetch('../api/api_leituras.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)
@@ -628,7 +628,7 @@
             }
             
             try {
-                const response = await fetch('api/api_leituras.php', {
+                const response = await fetch('../api/api_leituras.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ leituras })
@@ -698,7 +698,7 @@
         
         async function carregarConfigPeriodo() {
             try {
-                const response = await fetch('api/api_config_periodo_leitura.php');
+                const response = await fetch('../api/api_config_periodo_leitura.php');
                 const data = await response.json();
                 
                 if (data.sucesso && data.dados) {
@@ -735,7 +735,7 @@
             }
             
             try {
-                const response = await fetch('api/api_config_periodo_leitura.php', {
+                const response = await fetch('../api/api_config_periodo_leitura.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

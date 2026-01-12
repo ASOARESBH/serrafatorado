@@ -214,7 +214,7 @@
 
         // Carregar veículos para o filtro
         function carregarVeiculos() {
-            fetch('api/api_checklist.php?acao=listar_veiculos')
+            fetch('../api/api_checklist.php?acao=listar_veiculos')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -345,7 +345,7 @@
             formData.append('acao', 'deletar');
             formData.append('id', id);
             
-            fetch('api/api_checklist.php', {
+            fetch('../api/api_checklist.php', {
                 method: 'POST',
                 body: formData
             })

@@ -222,7 +222,7 @@
         // Carregar moradores
         async function carregarMoradores() {
             try {
-                const response = await fetch('api/api_moradores.php');
+                const response = await fetch('../api/api_moradores.php');
                 const data = await response.json();
                 
                 const select = document.getElementById('morador');
@@ -368,7 +368,7 @@
             }
             
             try {
-                const response = await fetch('api/api_estoque.php?action=saida', {
+                const response = await fetch('../api/api_estoque.php?action=saida', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(formData)
@@ -404,7 +404,7 @@
             tbody.innerHTML = '<tr><td colspan="7" class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr>';
             
             try {
-                const response = await fetch('api/api_estoque.php?action=movimentacoes&tipo=Saida&limit=20');
+                const response = await fetch('../api/api_estoque.php?action=movimentacoes&tipo=Saida&limit=20');
                 const data = await response.json();
                 
                 if (data.sucesso && data.dados.length > 0) {

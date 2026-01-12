@@ -239,7 +239,7 @@
         });
 
         function carregarUsuarios() {
-            fetch('api/api_usuarios.php')
+            fetch('../api/api_usuarios.php')
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -254,7 +254,7 @@
         }
 
         function carregarDados() {
-            fetch('api/api_inventario.php')
+            fetch('../api/api_inventario.php')
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso) {

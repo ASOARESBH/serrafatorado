@@ -596,7 +596,7 @@
         function carregarVisitantes() {
             document.getElementById('loading').classList.add('active');
             
-            fetch('api/api_visitantes.php')
+            fetch('../api/api_visitantes.php')
                 .then(response => response.text())
                 .then(text => {
                     document.getElementById('loading').classList.remove('active');
@@ -707,7 +707,7 @@
                 dados.id = editandoId;
             }
 
-            fetch('api/api_visitantes.php', {
+            fetch('../api/api_visitantes.php', {
                 method: metodo,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados)
@@ -736,7 +736,7 @@
 
         // Editar visitante
         function editarVisitante(id) {
-            fetch('api/api_visitantes.php')
+            fetch('../api/api_visitantes.php')
                 .then(response => response.text())
                 .then(text => {
                     try {
@@ -778,7 +778,7 @@
                 return;
             }
 
-            fetch('api/api_visitantes.php', {
+            fetch('../api/api_visitantes.php', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id })
@@ -860,7 +860,7 @@
         
         // Carregar visitantes no select
         function carregarVisitantesSelect() {
-            fetch('api/api_visitantes.php')
+            fetch('../api/api_visitantes.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -880,7 +880,7 @@
                 });
             
             // Carregar moradores
-            fetch('api/api_moradores.php')
+            fetch('../api/api_moradores.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -1013,7 +1013,7 @@
         function carregarAcessos() {
             document.getElementById('loadingAcessos').classList.add('active');
             
-            fetch('api/api_acessos_visitantes.php')
+            fetch('../api/api_acessos_visitantes.php')
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('loadingAcessos').classList.remove('active');
@@ -1318,7 +1318,7 @@
                 user_agent: navigator.userAgent
             };
             
-            fetch('api/api_logs_erro.php', {
+            fetch('../api/api_logs_erro.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados)
@@ -1376,7 +1376,7 @@
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gerando...';
             
             try {
-                const response = await fetch('api/api_face_id.php?action=gerar_token', {
+                const response = await fetch('../api/api_face_id.php?action=gerar_token', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

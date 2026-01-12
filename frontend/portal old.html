@@ -373,7 +373,7 @@
         });
 
         function verificarSessao() {
-            fetch('api/api_portal.php?action=verificar_sessao', {
+            fetch('../api/api_portal.php?action=verificar_sessao', {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             .then(r => r.json())
@@ -388,7 +388,7 @@
         function carregarPerfil() {
             document.getElementById('nomeUsuario').textContent = moradorNome;
             
-            fetch('api/api_portal.php?action=perfil', {
+            fetch('../api/api_portal.php?action=perfil', {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             .then(r => r.json())
@@ -415,7 +415,7 @@
                 celular: document.getElementById('perfilCelular').value
             };
 
-            fetch('api/api_portal.php?action=perfil', {
+            fetch('../api/api_portal.php?action=perfil', {
                 method: 'PUT',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -444,7 +444,7 @@
                 senha_confirmacao: document.getElementById('senhaConfirmacao').value
             };
 
-            fetch('api/api_portal.php?action=alterar_senha', {
+            fetch('../api/api_portal.php?action=alterar_senha', {
                 method: 'PUT',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -482,7 +482,7 @@
         }
 
         function carregarHidrometro() {
-            fetch('api/api_portal.php?action=hidrometro', {
+            fetch('../api/api_portal.php?action=hidrometro', {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             .then(r => r.json())
@@ -500,7 +500,7 @@
         }
 
         function carregarLancamentos() {
-            fetch('api/api_portal.php?action=lancamentos_agua', {
+            fetch('../api/api_portal.php?action=lancamentos_agua', {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             .then(r => r.json())
@@ -526,7 +526,7 @@
         }
 
         function carregarVeiculos() {
-            fetch('api/api_portal.php?action=veiculos', {
+            fetch('../api/api_portal.php?action=veiculos', {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             .then(r => r.json())
@@ -569,7 +569,7 @@
                 dados.id = veiculoEditando;
             }
 
-            fetch('api/api_portal.php?action=veiculos', {
+            fetch('../api/api_portal.php?action=veiculos', {
                 method: metodo,
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -590,7 +590,7 @@
         }
 
         function editarVeiculo(id) {
-            fetch('api/api_portal.php?action=veiculos', {
+            fetch('../api/api_portal.php?action=veiculos', {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             .then(r => r.json())
@@ -622,7 +622,7 @@
                 return;
             }
 
-            fetch('api/api_portal.php?action=veiculos', {
+            fetch('../api/api_portal.php?action=veiculos', {
                 method: 'DELETE',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -661,7 +661,7 @@
                 tipo: document.getElementById('visitanteTipo').value
             };
 
-            fetch('api/api_portal.php?action=visitantes', {
+            fetch('../api/api_portal.php?action=visitantes', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -681,7 +681,7 @@
         }
 
         function logout() {
-            fetch('api/api_portal.php?action=logout', {
+            fetch('../api/api_portal.php?action=logout', {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
             .then(() => {

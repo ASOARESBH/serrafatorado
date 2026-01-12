@@ -215,7 +215,7 @@ function definirDataHoraAtual() {
 }
 
 function carregarUnidades() {
-    fetch('api/api_unidades.php')
+    fetch('../api/api_unidades.php')
         .then(r => r.json())
         .then(data => {
             if (data.sucesso) {
@@ -277,7 +277,7 @@ function carregarMoradores() {
 }
 
 function carregarUsuarios() {
-    fetch('api/api_usuarios.php')
+    fetch('../api/api_usuarios.php')
         .then(r => r.json())
         .then(data => {
             if (data.sucesso) {
@@ -300,7 +300,7 @@ function carregarUsuarios() {
 }
 
 function carregarProtocolos() {
-    fetch('api/api_protocolos.php')
+    fetch('../api/api_protocolos.php')
         .then(r => r.json())
         .then(data => {
             if (data.sucesso) {
@@ -377,7 +377,7 @@ function salvarProtocolo() {
     const metodo = id ? 'PUT' : 'POST';
     if (id) dados.id = id;
     
-    fetch('api/api_protocolos.php', {
+    fetch('../api/api_protocolos.php', {
         method: metodo,
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(dados)
@@ -432,7 +432,7 @@ function excluirProtocolo(id) {
     
     if (!confirm('Deseja realmente excluir este protocolo?')) return;
     
-    fetch('api/api_protocolos.php', {
+    fetch('../api/api_protocolos.php', {
         method: 'DELETE',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: `id=${id}`
@@ -474,7 +474,7 @@ function registrarEntrega() {
         data_hora_entrega: document.getElementById('dataHoraEntrega').value
     };
     
-    fetch('api/api_protocolos.php', {
+    fetch('../api/api_protocolos.php', {
         method: 'PUT',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: Object.keys(dados).map(k => `${k}=${encodeURIComponent(dados[k])}`).join('&')

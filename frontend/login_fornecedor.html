@@ -78,7 +78,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
             const formData = new FormData(e.target);
             formData.append('acao', 'login');
             
-            const res = await fetch('api/api_login_fornecedor.php', { method: 'POST', body: formData });
+            const res = await fetch('../api/api_login_fornecedor.php', { method: 'POST', body: formData });
             const data = await res.json();
             
             if (data.sucesso) {

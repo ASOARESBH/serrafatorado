@@ -548,7 +548,7 @@
 
         // Carregar estatísticas
         function carregarEstatisticas() {
-            fetch('api/api_console_acesso.php?action=estatisticas')
+            fetch('../api/api_console_acesso.php?action=estatisticas')
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -614,7 +614,7 @@
         function validarQRCode(qrCode) {
             document.getElementById('loading').classList.add('active');
 
-            fetch('api/api_console_acesso.php?action=validar_qrcode', {
+            fetch('../api/api_console_acesso.php?action=validar_qrcode', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -768,7 +768,7 @@
 
             document.getElementById('loading').classList.add('active');
 
-            fetch('api/api_console_acesso.php?action=criar_temporario', {
+            fetch('../api/api_console_acesso.php?action=criar_temporario', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados)

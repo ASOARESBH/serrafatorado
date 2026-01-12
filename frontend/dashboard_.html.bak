@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Controle de Acesso</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; display: flex; }
+        
+        /* Sidebar */
+        .sidebar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 260px; 
+            height: 100vh; 
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%); 
+            padding: 2rem 0; 
+            overflow-y: auto; 
+            z-index: 1000; 
+        }
+        .sidebar h1 { 
+            color: #fff; 
+            font-size: 1.3rem; 
+            text-align: center; 
+            margin-bottom: 2rem; 
+            padding: 0 1rem;
+        }
+        .nav-menu { list-style: none; padding: 0 1rem; }
+        .nav-item { margin-bottom: 0.5rem; }
+        .nav-link { 
+            display: flex; 
+            align-items: center; 
+            padding: 0.75rem 1rem; 
+            color: #cbd5e1; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            transition: all 0.2s; 
+        }
+        .nav-link:hover, .nav-link.active { 
+            background: rgba(255, 255, 255, 0.1); 
+            color: #fff; 
+        }
+        .nav-link i { margin-right: 0.75rem; width: 20px; text-align: center; }
+        
+        /* User Info & Logout */
+        .user-section {
+            padding: 1rem;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .user-info-sidebar {
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+        .user-name { font-weight: 600; font-size: 0.95rem; }
+        .user-email { font-size: 0.8rem; opacity: 0.8; margin-top: 0.25rem; }
+        .btn-logout-sidebar {
+            width: 100%;
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+        .btn-logout-sidebar:hover {
+            background: rgba(239, 68, 68, 0.3);
+            color: #fecaca;
+        }
+        
+        /* Main Content */
+        .main-content { 
+            margin-left: 260px; 
+            padding: 2rem; 
+            width: 100%; 
+            min-height: 100vh;
+        }
+        .header { 
+            background: #fff; 
+            padding: 1.5rem 2rem; 
+            border-radius: 12px; 
+            margin-bottom: 2rem; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
+        }
+        .header h1 { 
+            color: #1e293b; 
+            font-size: 1.8rem; 
+            margin: 0; 
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        /* Welcome Section */
+        .welcome { 
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
+            color: #fff; 
+            padding: 2rem; 
+            border-radius: 12px; 
+            margin-bottom: 2rem; 
+            text-align: center; 
+        }
+        .welcome h2 { margin-bottom: 0.5rem; font-size: 1.5rem; }
+        .welcome p { opacity: 0.9; }
+        
+        /* Stats Grid */
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 1.5rem; 
+            margin-bottom: 2rem; 
+        }
+        .stat-card { 
+            background: #fff; 
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
+            border-left: 4px solid #3b82f6; 
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card.agua { border-left-color: #06b6d4; }
+        .stat-card.abastecimento { border-left-color: #f59e0b; }
+        .stat-card h3 { 
+            color: #64748b; 
+            font-size: 0.9rem; 
+            margin-bottom: 0.5rem; 
+            font-weight: 600; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-card .value { 
+            font-size: 2rem; 
+            font-weight: bold; 
+            color: #1e293b; 
+            margin-bottom: 0.25rem;
+        }
+        .stat-card .subvalue { 
+            font-size: 0.85rem; 
+            color: #94a3b8; 
+            margin-top: 0.5rem; 
+        }
+        .stat-card .icon { 
+            position: absolute; 
+            right: 1.5rem; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            font-size: 3rem; 
+            opacity: 0.1; 
+            color: #3b82f6;
+        }
+        .stat-card.agua .icon { color: #06b6d4; }
+        .stat-card.abastecimento .icon { color: #f59e0b; }
+        
+        /* Sections */
+        .section { 
+            background: #fff; 
+            padding: 2rem; 
+            border-radius: 12px; 
+            margin-bottom: 2rem; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
+        }
+        .section-title { 
+            font-size: 1.3rem; 
+            color: #1e293b; 
+            margin-bottom: 1.5rem; 
+            padding-bottom: 1rem; 
+            border-bottom: 2px solid #e2e8f0; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.75rem; 
+        }
+        .section-title i { color: #3b82f6; font-size: 1.5rem; }
+        
+        /* Table Styles */
+        .table-container { overflow-x: auto; margin-top: 1rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th { 
+            background: #f1f5f9; 
+            padding: 1rem; 
+            text-align: left; 
+            font-weight: 600; 
+            color: #475569; 
+            border-bottom: 2px solid #e2e8f0; 
+            font-size: 0.9rem; 
+            white-space: nowrap;
+        }
+        td { 
+            padding: 0.75rem 1rem; 
+            border-bottom: 1px solid #e2e8f0; 
+            vertical-align: middle;
+        }
+        tr:hover { background: #f8fafc; }
+        
+        /* Badge Styles */
+        .badge { 
+            display: inline-block; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 20px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            text-align: center;
+            min-width: 60px;
+        }
+        .badge.top-1 { background: #fef3c7; color: #92400e; }
+        .badge.top-2 { background: #e5e7eb; color: #374151; }
+        .badge.top-3 { background: #fed7aa; color: #92400e; }
+        .badge.top-other { background: #f3f4f6; color: #6b7280; }
+        .badge.status-critico { background: #fee2e2; color: #991b1b; }
+        .badge.status-baixo { background: #fef3c7; color: #92400e; }
+        .badge.status-normal { background: #dcfce7; color: #166534; }
+        
+        /* Info Box */
+        .info-box { 
+            background: #f0f9ff; 
+            border-left: 4px solid #0284c7; 
+            padding: 1.5rem; 
+            border-radius: 8px; 
+            margin-bottom: 1.5rem; 
+        }
+        .info-box h4 { 
+            color: #0c4a6e; 
+            margin-bottom: 1rem; 
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .info-box p { 
+            color: #0369a1; 
+            font-size: 0.95rem; 
+            margin: 0.5rem 0; 
+            display: flex;
+            justify-content: space-between;
+        }
+        .info-box p strong { color: #0c4a6e; min-width: 120px; }
+        
+        /* Abastecimento Info */
+        .abastecimento-info { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 1rem; 
+            margin-bottom: 1.5rem; 
+        }
+        .abastecimento-item { 
+            background: #f8fafc; 
+            padding: 1.25rem; 
+            border-radius: 8px; 
+            border-left: 4px solid #f59e0b; 
+        }
+        .abastecimento-item h5 { 
+            color: #64748b; 
+            font-size: 0.85rem; 
+            margin-bottom: 0.5rem; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .abastecimento-item .value { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            color: #1e293b; 
+        }
+        
+        /* Loading State */
+        .loading { 
+            text-align: center; 
+            padding: 3rem; 
+            color: #94a3b8; 
+        }
+        .loading i { 
+            font-size: 2rem; 
+            margin-bottom: 1rem; 
+            animation: spin 1s linear infinite; 
+        }
+        @keyframes spin { 
+            from { transform: rotate(0deg); } 
+            to { transform: rotate(360deg); } 
+        }
+        
+        /* Empty State */
+        .empty-state { 
+            text-align: center; 
+            padding: 3rem; 
+            color: #94a3b8; 
+        }
+        .empty-state i { 
+            font-size: 3rem; 
+            margin-bottom: 1rem; 
+            opacity: 0.5; 
+        }
+        
+        /* Error State */
+        .error-state { 
+            background: #fee2e2; 
+            border: 1px solid #fecaca; 
+            color: #991b1b; 
+            padding: 1.5rem; 
+            border-radius: 8px; 
+            margin-bottom: 1rem; 
+            text-align: center;
+        }
+        .error-state i { margin-right: 0.5rem; }
+        
+        /* Menu Toggle Mobile */
+        .menu-toggle { 
+            display: none; 
+            position: fixed; 
+            top: 1rem; 
+            left: 1rem; 
+            z-index: 1001; 
+            background: #1e293b; 
+            color: #fff; 
+            border: none; 
+            padding: 0.75rem; 
+            border-radius: 8px; 
+            cursor: pointer; 
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { 
+                transform: translateX(-100%); 
+                transition: transform 0.3s ease; 
+                width: 280px;
+            }
+            .sidebar.active { transform: translateX(0); }
+            .menu-toggle { display: block; }
+            .main-content { 
+                margin-left: 0; 
+                padding: 1rem; 
+            }
+            .header { padding: 1rem; }
+            .header h1 { font-size: 1.4rem; }
+            .stats-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .section { padding: 1.5rem; }
+            .section-title { font-size: 1.2rem; }
+            th, td { padding: 0.75rem; font-size: 0.9rem; }
+            .abastecimento-info { grid-template-columns: 1fr; }
+            .user-info-sidebar { display: none; }
+            .btn-logout-sidebar { padding: 0.75rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content { padding: 1rem 0.75rem; }
+            .section { padding: 1.25rem; }
+            .stat-card { padding: 1.25rem; }
+            .stat-card .value { font-size: 1.75rem; }
+            .stat-card .icon { font-size: 2.5rem; }
+            th, td { padding: 0.5rem; font-size: 0.85rem; }
+            .info-box { padding: 1.25rem; }
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            height: 300px;
+            margin-top: 1.5rem;
+            position: relative;
+        }
+        
+        /* Refresh Button */
+        .btn-refresh {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            float: right;
+            margin-top: -3rem;
+        }
+        .btn-refresh:hover {
+            background: #2563eb;
+        }
+    </style>
+    <script src="js/sessao_manager.js"></script>
+</head>
+<body>
+    <button class="menu-toggle" onclick="toggleMenu()" aria-label="Abrir menu">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <nav class="sidebar" id="sidebar">
+        <h1>
+            <i class="fas fa-building"></i> 
+            Serra da Liberdade
+        </h1>
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link active">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="moradores.html" class="nav-link">
+                    <i class="fas fa-users"></i> Moradores
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="veiculos.html" class="nav-link">
+                    <i class="fas fa-car"></i> Veículos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="visitantes.html" class="nav-link">
+                    <i class="fas fa-user-friends"></i> Visitantes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="registro.html" class="nav-link">
+                    <i class="fas fa-clipboard-list"></i> Registro Manual
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="acesso.html" class="nav-link">
+                    <i class="fas fa-door-open"></i> Controle de Acesso
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="relatorios.html" class="nav-link">
+                    <i class="fas fa-file-alt"></i> Relatórios
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="financeiro.html" class="nav-link">
+                    <i class="fas fa-money-bill-wave"></i> Financeiro
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="configuracao.html" class="nav-link">
+                    <i class="fas fa-cog"></i> Configurações
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="manutencao.html" class="nav-link">
+                    <i class="fas fa-tools"></i> Manutenção
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="administrativa.html" class="nav-link">
+                    <i class="fas fa-briefcase"></i> Administrativo
+                </a>
+            </li>
+        </ul>
+        
+        <div class="user-section">
+            <div class="user-info-sidebar">
+                <div class="user-name" id="sidebarUserName">Carregando...</div>
+                <div class="user-email" id="sidebarUserEmail">Carregando...</div>
+            </div>
+            <button class="btn-logout-sidebar" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="header">
+            <h1>
+                <i class="fas fa-chart-line"></i> 
+                Dashboard - Sistema de Controle de Acesso
+            </h1>
+            <button class="btn-refresh" onclick="recarregarDados()" title="Atualizar dados">
+                <i class="fas fa-sync-alt"></i> Atualizar
+            </button>
+        </header>
+
+        <div class="welcome">
+            <h2>
+                <i class="fas fa-building"></i> 
+                Bem-vindo ao Sistema de Controle de Acesso
+            </h2>
+            <p>Condomínio Serra da Liberdade</p>
+        </div>
+
+        <!-- ESTATÍSTICAS GERAIS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users icon"></i>
+                <h3>Total de Moradores</h3>
+                <div class="value" id="totalMoradores">0</div>
+                <div class="subvalue" id="moradoresAtivos">Carregando...</div>
+            </div>
+            
+            <div class="stat-card agua">
+                <i class="fas fa-tint icon"></i>
+                <h3>Consumo Total de Água</h3>
+                <div class="value" id="totalConsumoAgua">0 m³</div>
+                <div class="subvalue" id="consumoMedioMorador">Carregando...</div>
+            </div>
+            
+            <div class="stat-card agua">
+                <i class="fas fa-dollar-sign icon"></i>
+                <h3>Valor Total de Água</h3>
+                <div class="value" id="totalValorAgua">R$ 0,00</div>
+                <div class="subvalue" id="valorMedioMorador">Carregando...</div>
+            </div>
+            
+            <div class="stat-card abastecimento">
+                <i class="fas fa-gas-pump icon"></i>
+                <h3>Saldo de Abastecimento</h3>
+                <div class="value" id="saldoAbastecimento">R$ 0,00</div>
+                <div class="subvalue" id="statusSaldo">Carregando...</div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: TOP 10 MORADORES COM MAIOR CONSUMO DE ÁGUA -->
+        <div class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-bar"></i> Top 10 Moradores - Maior Consumo de Água
+                </h2>
+                <div style="font-size: 0.9rem; color: #64748b;">
+                    <i class="fas fa-calendar"></i> 
+                    <span id="periodoAtual">Este mês</span>
+                </div>
+            </div>
+            
+            <div id="topConsumoContainer" class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Carregando dados de consumo...</p>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: ABASTECIMENTO DE VEÍCULOS -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-gas-pump"></i> Abastecimento de Veículos
+            </h2>
+            
+            <div id="abastecimentoContainer" class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Carregando dados de abastecimento...</p>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: HISTÓRICO DE ABASTECIMENTOS -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i> Histórico de Abastecimentos
+            </h2>
+            
+            <div id="historicoAbastecimentoContainer" class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Carregando histórico...</p>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: GRÁFICO DE CONSUMO -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-chart-area"></i> Consumo de Água - Visão Geral
+            </h2>
+            
+            <div class="chart-container">
+                <canvas id="consumoChart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        // ========== CONFIGURAÇÃO ==========
+        const API_BASE = 'api/api_dashboard_agua.php';
+        const DEBUG = true;
+        let consumoChart = null;
+        
+        function log(msg, data = null) {
+            if (DEBUG) {
+                console.log('[Dashboard]', msg, data || '');
+            }
+        }
+
+        // ========== VERIFICAÇÃO DE SESSÃO ==========
+        function verificarSessao() {
+            return fetch('api/verificar_sessao.php', {
+                method: 'GET',
+                credentials: 'include'
+            })
+            .then(response => {
+                if (response.status === 401 || response.status === 403) {
+                    // Não autenticado, redirecionar para login
+                    window.location.href = '../login.html?erro=1';
+                    throw new Error('Não autenticado');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data.sucesso) {
+                    window.location.href = '../login.html?erro=1';
+                    throw new Error('Sessão inválida');
+                }
+                return data.dados.usuario;
+            });
+        }
+
+        // ========== LOGOUT ==========
+        function logout() {
+            if (confirm('Deseja realmente sair do sistema?')) {
+                fetch('api/logout.php', {
+                    method: 'POST',
+                    credentials: 'include'
+                })
+                .then(() => {
+                    // Limpar localStorage
+                    localStorage.clear();
+                    // Redirecionar para login
+                    window.location.href = '../login.html';
+                })
+                .catch(error => {
+                    console.error('Erro ao fazer logout:', error);
+                    window.location.href = '../login.html';
+                });
+            }
+        }
+
+        // ========== CARREGAMENTO DE DADOS ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Primeiro verifica a sessão
+            verificarSessao()
+                .then(usuario => {
+                    // Atualiza informações do usuário
+                    document.getElementById('sidebarUserName').textContent = usuario.nome;
+                    document.getElementById('sidebarUserEmail').textContent = usuario.email;
+                    
+                    // Carrega os dados do dashboard
+                    log('Sessão válida. Iniciando carregamento de dados...');
+                    carregarTodosDados();
+                })
+                .catch(error => {
+                    log('Erro de sessão:', error);
+                    // Redirecionamento já foi feito na verificação
+                });
+        });
+
+        // ========== CARREGAR TODOS OS DADOS ==========
+        function carregarTodosDados() {
+            // Mostrar loading em todos os containers
+            document.querySelectorAll('.loading').forEach(container => {
+                container.innerHTML = '<i class="fas fa-spinner"></i><p>Carregando...</p>';
+            });
+            
+            // Carregar dados sequencialmente
+            carregarEstatisticas()
+                .then(() => carregarTopConsumo())
+                .then(() => carregarAbastecimento())
+                .then(() => carregarHistoricoAbastecimento())
+                .then(() => carregarGraficoConsumo())
+                .catch(error => {
+                    console.error('Erro ao carregar dados:', error);
+                });
+        }
+
+        function recarregarDados() {
+            const btn = document.querySelector('.btn-refresh');
+            const originalHTML = btn.innerHTML;
+            
+            // Adicionar animação de loading
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Atualizando...';
+            btn.disabled = true;
+            
+            // Recarregar dados
+            carregarTodosDados();
+            
+            // Restaurar botão após 2 segundos
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                
+                // Mostrar mensagem de sucesso
+                mostrarToast('Dados atualizados com sucesso!', 'success');
+            }, 2000);
+        }
+
+        // ========== ESTATÍSTICAS GERAIS ==========
+        function carregarEstatisticas() {
+            return Promise.all([
+                fetch(API_BASE + '?estatisticas_gerais=1', {
+                    credentials: 'include'
+                }).then(response => response.json()),
+                
+                fetch(API_BASE + '?saldo_abastecimento=1', {
+                    credentials: 'include'
+                }).then(response => response.json())
+            ])
+            .then(([estatisticas, saldo]) => {
+                // Processar estatísticas
+                if (estatisticas.sucesso && estatisticas.dados) {
+                    const d = estatisticas.dados;
+                    document.getElementById('totalMoradores').textContent = d.total_moradores || 0;
+                    document.getElementById('moradoresAtivos').textContent = 
+                        `${d.moradores_ativos || 0} ativos • ${d.moradores_inativos || 0} inativos`;
+                    
+                    document.getElementById('totalConsumoAgua').textContent = 
+                        (d.total_consumo_agua || 0).toLocaleString('pt-BR', {maximumFractionDigits: 0}) + ' m³';
+                    
+                    document.getElementById('consumoMedioMorador').textContent = 
+                        'Média: ' + (d.consumo_medio_por_morador || 0).toLocaleString('pt-BR', {maximumFractionDigits: 2}) + ' m³/morador';
+                    
+                    document.getElementById('totalValorAgua').textContent = 
+                        'R$ ' + (d.total_valor_agua || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    
+                    document.getElementById('valorMedioMorador').textContent = 
+                        'Média: R$ ' + (d.valor_medio_por_morador || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                }
+                
+                // Processar saldo
+                if (saldo.sucesso && saldo.dados) {
+                    const s = saldo.dados;
+                    document.getElementById('saldoAbastecimento').textContent = 
+                        'R$ ' + (s.saldo_atual || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+                    
+                    const statusEl = document.getElementById('statusSaldo');
+                    statusEl.textContent = s.status_saldo || 'Sem dados';
+                    
+                    // Aplicar cor baseada no status
+                    if (s.status_saldo?.toLowerCase().includes('crítico')) {
+                        statusEl.style.color = '#dc2626';
+                        statusEl.style.fontWeight = '600';
+                    } else if (s.status_saldo?.toLowerCase().includes('baixo')) {
+                        statusEl.style.color = '#f59e0b';
+                    } else {
+                        statusEl.style.color = '#10b981';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar estatísticas:', error);
+                mostrarErro('estatisticas', 'Erro ao carregar estatísticas');
+            });
+        }
+
+        // ========== TOP 10 CONSUMO DE ÁGUA ==========
+        function carregarTopConsumo() {
+            return fetch(API_BASE + '?top_consumo_agua=1', {
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro HTTP: ' + response.status);
+                return response.json();
+            })
+            .then(data => {
+                if (data.sucesso && data.dados && data.dados.length > 0) {
+                    renderizarTopConsumo(data.dados);
+                } else {
+                    document.getElementById('topConsumoContainer').innerHTML = 
+                        '<div class="empty-state">' +
+                        '<i class="fas fa-inbox"></i>' +
+                        '<p>Nenhum dado de consumo disponível</p>' +
+                        '</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar top consumo:', error);
+                mostrarErro('topConsumo', 'Erro ao carregar dados de consumo');
+            });
+        }
+
+        function renderizarTopConsumo(dados) {
+            let html = '<div class="table-container"><table>';
+            html += '<thead><tr>';
+            html += '<th style="width: 50px;">Pos.</th>';
+            html += '<th>Unidade</th>';
+            html += '<th>Nome do Morador</th>';
+            html += '<th style="text-align: right;">Consumo (m³)</th>';
+            html += '<th style="text-align: right;">Valor</th>';
+            html += '<th>Status</th>';
+            html += '</tr></thead><tbody>';
+
+            dados.forEach((morador, index) => {
+                let badgeClass = 'badge ';
+                if (index === 0) badgeClass += 'top-1';
+                else if (index === 1) badgeClass += 'top-2';
+                else if (index === 2) badgeClass += 'top-3';
+                else badgeClass += 'top-other';
+
+                // Determinar status com base no consumo
+                let statusClass = 'status-normal';
+                let statusText = 'Normal';
+                const consumo = morador.consumo_total || 0;
+                
+                if (consumo > 50) {
+                    statusClass = 'status-critico';
+                    statusText = 'Crítico';
+                } else if (consumo > 30) {
+                    statusClass = 'status-baixo';
+                    statusText = 'Alto';
+                }
+
+                html += '<tr>';
+                html += '<td><span class="' + badgeClass + '">#' + (index + 1) + '</span></td>';
+                html += '<td><strong>' + escapeHtml(morador.unidade || '-') + '</strong></td>';
+                html += '<td>' + escapeHtml(morador.nome_morador || '-') + '</td>';
+                html += '<td style="text-align: right;"><strong>' + 
+                    (consumo).toLocaleString('pt-BR', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + '</strong></td>';
+                html += '<td style="text-align: right;">R$ ' + 
+                    (morador.valor_total || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2}) + '</td>';
+                html += '<td><span class="badge ' + statusClass + '">' + statusText + '</span></td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table></div>';
+            document.getElementById('topConsumoContainer').innerHTML = html;
+        }
+
+        // ========== ABASTECIMENTO DE VEÍCULOS ==========
+        function carregarAbastecimento() {
+            return fetch(API_BASE + '?ultimo_lancamento_abastecimento=1', {
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro HTTP: ' + response.status);
+                return response.json();
+            })
+            .then(data => {
+                if (data.sucesso && data.dados && Object.keys(data.dados).length > 0) {
+                    renderizarAbastecimento(data.dados);
+                } else {
+                    document.getElementById('abastecimentoContainer').innerHTML = 
+                        '<div class="empty-state">' +
+                        '<i class="fas fa-inbox"></i>' +
+                        '<p>Nenhum lançamento de abastecimento registrado</p>' +
+                        '</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar abastecimento:', error);
+                mostrarErro('abastecimento', 'Erro ao carregar dados de abastecimento');
+            });
+        }
+
+        function renderizarAbastecimento(lancamento) {
+            let html = '<div class="info-box">';
+            html += '<h4><i class="fas fa-gas-pump"></i> Último Lançamento de Abastecimento</h4>';
+            html += '<p><strong>Veículo:</strong> ' + escapeHtml(lancamento.modelo || '-') + ' - ' + escapeHtml(lancamento.placa || '-') + '</p>';
+            html += '<p><strong>Data:</strong> ' + (lancamento.data_abastecimento_formatada || '-') + '</p>';
+            html += '<p><strong>Quilometragem:</strong> ' + (lancamento.km_abastecimento || 0).toLocaleString('pt-BR') + ' km</p>';
+            html += '<p><strong>Combustível:</strong> ' + escapeHtml(lancamento.tipo_combustivel || '-') + '</p>';
+            html += '<p><strong>Litros:</strong> ' + (lancamento.litros || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2}) + ' L</p>';
+            html += '<p><strong>Valor:</strong> R$ ' + (lancamento.valor || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2}) + '</p>';
+            html += '<p><strong>Operador:</strong> ' + escapeHtml(lancamento.usuario_logado || '-') + '</p>';
+            html += '</div>';
+
+            // Carregar saldo adicional
+            fetch(API_BASE + '?saldo_abastecimento=1', {
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.sucesso && data.dados) {
+                    const saldo = data.dados;
+                    html += '<div class="abastecimento-info">';
+                    html += '<div class="abastecimento-item">';
+                    html += '<h5>Saldo Atual</h5>';
+                    html += '<div class="value">R$ ' + (saldo.saldo_atual || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2}) + '</div>';
+                    html += '</div>';
+                    html += '<div class="abastecimento-item">';
+                    html += '<h5>Abastecimentos Hoje</h5>';
+                    html += '<div class="value">' + (saldo.abastecimentos_hoje || 0) + '</div>';
+                    html += '</div>';
+                    html += '<div class="abastecimento-item">';
+                    html += '<h5>Valor Hoje</h5>';
+                    html += '<div class="value">R$ ' + (saldo.valor_hoje || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2}) + '</div>';
+                    html += '</div>';
+                    html += '<div class="abastecimento-item">';
+                    html += '<h5>Status</h5>';
+                    const statusClass = (saldo.status_saldo || 'normal').toLowerCase().replace(/[^a-z]/g, '');
+                    html += '<div class="value"><span class="badge status-' + statusClass + '">' + (saldo.status_saldo || '-') + '</span></div>';
+                    html += '</div>';
+                    html += '</div>';
+                }
+                document.getElementById('abastecimentoContainer').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Erro ao carregar saldo:', error);
+                document.getElementById('abastecimentoContainer').innerHTML = html;
+            });
+        }
+
+        // ========== HISTÓRICO DE ABASTECIMENTOS ==========
+        function carregarHistoricoAbastecimento() {
+            return fetch(API_BASE + '?historico_abastecimentos=1&limite=10', {
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro HTTP: ' + response.status);
+                return response.json();
+            })
+            .then(data => {
+                if (data.sucesso && data.dados && data.dados.length > 0) {
+                    renderizarHistoricoAbastecimento(data.dados);
+                } else {
+                    document.getElementById('historicoAbastecimentoContainer').innerHTML = 
+                        '<div class="empty-state">' +
+                        '<i class="fas fa-inbox"></i>' +
+                        '<p>Nenhum histórico de abastecimento disponível</p>' +
+                        '</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar histórico:', error);
+                mostrarErro('historico', 'Erro ao carregar histórico');
+            });
+        }
+
+        function renderizarHistoricoAbastecimento(dados) {
+            let html = '<div class="table-container"><table>';
+            html += '<thead><tr>';
+            html += '<th>Data</th>';
+            html += '<th>Veículo</th>';
+            html += '<th>Placa</th>';
+            html += '<th style="text-align: right;">KM</th>';
+            html += '<th style="text-align: right;">Litros</th>';
+            html += '<th style="text-align: right;">Valor</th>';
+            html += '</tr></thead><tbody>';
+
+            dados.forEach(abastecimento => {
+                html += '<tr>';
+                html += '<td>' + (abastecimento.data_abastecimento_formatada || '-') + '</td>';
+                html += '<td>' + escapeHtml(abastecimento.modelo || '-') + '</td>';
+                html += '<td><strong>' + escapeHtml(abastecimento.placa || '-') + '</strong></td>';
+                html += '<td style="text-align: right;">' + (abastecimento.km_abastecimento || 0).toLocaleString('pt-BR') + '</td>';
+                html += '<td style="text-align: right;">' + (abastecimento.litros || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2}) + '</td>';
+                html += '<td style="text-align: right;"><strong>R$ ' + 
+                    (abastecimento.valor || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2}) + '</strong></td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table></div>';
+            document.getElementById('historicoAbastecimentoContainer').innerHTML = html;
+        }
+
+        // ========== GRÁFICO DE CONSUMO ==========
+        function carregarGraficoConsumo() {
+            // Dados de exemplo - substitua por chamada real à API
+            const dadosExemplo = {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                valores: [120, 135, 145, 130, 155, 165, 170, 160, 150, 140, 130, 125]
+            };
+            
+            renderizarGraficoConsumo(dadosExemplo);
+            
+            // Para usar dados reais, descomente:
+            /*
+            return fetch(API_BASE + '?grafico_consumo=1', {
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.sucesso) {
+                    renderizarGraficoConsumo(data.dados);
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar gráfico:', error);
+                renderizarGraficoConsumo(dadosExemplo); // Fallback para dados de exemplo
+            });
+            */
+        }
+
+        function renderizarGraficoConsumo(dados) {
+            const ctx = document.getElementById('consumoChart').getContext('2d');
+            
+            // Destruir gráfico anterior se existir
+            if (consumoChart) {
+                consumoChart.destroy();
+            }
+            
+            consumoChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dados.labels,
+                    datasets: [{
+                        label: 'Consumo de Água (m³)',
+                        data: dados.valores,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `Consumo: ${context.parsed.y.toLocaleString('pt-BR')} m³`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Consumo (m³)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ========== FUNÇÕES AUXILIARES ==========
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.toString().replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function mostrarErro(containerId, mensagem) {
+            const container = document.getElementById(containerId + 'Container');
+            if (container) {
+                container.innerHTML = 
+                    '<div class="error-state">' +
+                    '<i class="fas fa-exclamation-triangle"></i>' +
+                    '<p>' + mensagem + '</p>' +
+                    '</div>';
+            }
+        }
+
+        function mostrarToast(mensagem, tipo = 'info') {
+            // Criar elemento de toast
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            if (tipo === 'success') {
+                toast.style.background = '#10b981';
+            } else if (tipo === 'error') {
+                toast.style.background = '#ef4444';
+            } else {
+                toast.style.background = '#3b82f6';
+            }
+            
+            toast.textContent = mensagem;
+            document.body.appendChild(toast);
+            
+            // Remover após 3 segundos
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // Adicionar estilos de animação para toast
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Fechar menu ao clicar fora (mobile)
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.menu-toggle');
+            
+            if (window.innerWidth <= 768 && sidebar && toggle) {
+                if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
+        // Atualizar período atual
+        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        const hoje = new Date();
+        document.getElementById('periodoAtual').textContent = 
+            `${meses[hoje.getMonth()]} de ${hoje.getFullYear()}`;
+    </script>
+</body>
+</html>

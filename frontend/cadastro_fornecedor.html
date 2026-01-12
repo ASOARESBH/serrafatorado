@@ -159,7 +159,7 @@ hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
             try {
                 log('Carregando ramos de atividade...');
                 
-                const res = await fetch('api/api_ramos_atividade.php?acao=listar');
+                const res = await fetch('../api/api_ramos_atividade.php?acao=listar');
                 
                 if (!res.ok) {
                     throw new Error(`HTTP error! status: ${res.status}`);
@@ -255,7 +255,7 @@ hr { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
             try {
                 log('Enviando dados para API...');
                 
-                const res = await fetch('api/api_fornecedores.php', {
+                const res = await fetch('../api/api_fornecedores.php', {
                     method: 'POST',
                     body: formData
                 });

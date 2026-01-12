@@ -309,7 +309,7 @@
         });
 
         function carregarUsuarios() {
-            fetch('api/api_usuarios.php')
+            fetch('../api/api_usuarios.php')
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -334,7 +334,7 @@
         }
 
         function carregarInventario() {
-            fetch('api/api_inventario.php')
+            fetch('../api/api_inventario.php')
                 .then(r => r.json())
                 .then(data => {
                     if (data.sucesso) {
@@ -465,7 +465,7 @@
                 dados.id = itemEditando;
             }
 
-            fetch('api/api_inventario.php', {
+            fetch('../api/api_inventario.php', {
                 method: metodo,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados)
@@ -526,7 +526,7 @@
                 return;
             }
 
-            fetch('api/api_inventario.php', {
+            fetch('../api/api_inventario.php', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id })
